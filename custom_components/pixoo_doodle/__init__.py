@@ -1,8 +1,11 @@
 """Pixoo Doodle integration."""
 
-from homeassistant.core import HomeAssistant
-from homeassistant.helpers.typing import ConfigType
-from .coordinator import PixooConfigEntry, RuntimeData
+from typing import TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from homeassistant.core import HomeAssistant
+    from homeassistant.helpers.typing import ConfigType
+    from .coordinator import PixooConfigEntry
 
 PLATFORMS = ("light", "number", "select", "sensor", "switch", "button", "image")
 
@@ -15,6 +18,8 @@ async def async_setup(hass: HomeAssistant, config: ConfigType) -> bool:
 
 
 async def async_setup_entry(hass: HomeAssistant, entry: PixooConfigEntry) -> None:
+    from .coordinator import RuntimeData
+
     runtime = RuntimeData(hass, entry)
     await runtime.async_config_entry_first_refresh()
     entry.runtime_data = runtime
