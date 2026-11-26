@@ -15,6 +15,8 @@ On November 25, 2026, Divoom’s same-LAN discovery returned hardware 201 for th
 | Channel/SetClockSelectId, Channel/SetIndex | The original face and channel were restored and verified by polling. |
 | Device/GetHardwareVersion, Sys/GetUtcTime, Tools/GetTimerStatus on port 80 | String-valued error_code indicating the request was rejected. |
 
+A separate temporary installation of Core 2026.11.3 completed the manual-IP config flow against the real panel, loaded its entities, read brightness and channel through the registered get_config action, produced redacted diagnostics, and unloaded the entry. The test made no changes to the owner’s Home Assistant installation.
+
 The single-frame test exercised the client's normal upload path. Animated GIFs, scroll timing, buzzer, timers and changes to system settings have automated or protocol coverage only. The scrubbed response fixture is in [tests/fixtures/pixoo16.json](../tests/fixtures/pixoo16.json).
 
 Targeted unicast SSDP and mDNS queries elicited no reply. Reverse DNS supplied no model-specific hostname. A DHCP lease hostname in UniFi has not been established. The integration matches DHCP updates for already registered MACs only. A shared ESP chipset prefix is insufficient evidence for new-device discovery.

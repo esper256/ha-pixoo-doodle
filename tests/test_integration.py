@@ -41,6 +41,33 @@ async def test_lifecycle(core):
         states = {s.domain for s in core.states.async_all()}
         assert {"light", "select", "switch", "sensor", "number", "image"} <= states
 
+        from homeassistant.helpers import entity_registry as er
+
+        registry = er.async_get(core)
+        snapshot = {
+            entity.unique_id.removeprefix(entry.unique_id + "_"): core.states.get(
+                entity.entity_id
+            ).state
+            for entity in er.async_entries_for_config_entry(registry, entry.entry_id)
+            if entity.disabled_by is None
+        }
+        assert snapshot == {
+            "display": "unknown",
+            "brightness": "20",
+            "channel": "faces",
+            "custom_page": "unknown",
+            "rotation": "0",
+            "visualizer": "unknown",
+            "clock_face": "84",
+            "mirror": "off",
+            "hour24": "off",
+            "hardware": "201",
+            "firmware": "unknown",
+            "resolution": "16×16",
+            "current_channel": "faces",
+            "preview": "unknown",
+        }
+
         async def action(name, **args):
             return await core.services.async_call(
                 DOMAIN,

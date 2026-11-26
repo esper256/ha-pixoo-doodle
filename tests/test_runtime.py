@@ -179,3 +179,23 @@ async def test_native_text(runtime):
         assert cmd.await_args.args == ("Draw/SendHttpText",)
         with patch("homeassistant.components.image.entity.get_async_client"):
             assert await image.Preview(r).async_image() == r.preview
+
+
+async def test_unreachable_recovery_logs(runtime, caplog):
+    import logging
+
+    r = runtime
+    with (
+        caplog.at_level(logging.INFO, logger=r.logger.name),
+        patch.object(r.client, "state", side_effect=Unreachable),
+        patch.object(r.client, "probe", side_effect=Unreachable),
+    ):
+        await r.async_refresh()
+        assert not r.last_update_success
+        await r.async_refresh()
+        with patch.object(r.client, "state", return_value={"Brightness": 20}):
+            await r.async_refresh()
+        assert r.last_update_success
+    messages = [record for record in caplog.records if record.name == r.logger.name]
+    assert len(messages) == 2
+    assert all(record.levelno == logging.INFO for record in messages)

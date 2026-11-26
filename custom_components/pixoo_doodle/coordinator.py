@@ -14,7 +14,22 @@ from homeassistant.helpers.update_coordinator import DataUpdateCoordinator, Upda
 try:
     from homeassistant.helpers.update_coordinator import UpdateFailedUnreachable  # type: ignore[attr-defined]
 except ImportError:  # Introduced in Core 2026.12
-    UpdateFailedUnreachable = UpdateFailed
+
+    class UpdateFailedUnreachable(UpdateFailed):  # type: ignore[no-redef]
+        """Compatibility exception for Core 2026.11."""
+
+    def _unreachable_log_level(record: logging.LogRecord) -> bool:
+        # Core already suppresses duplicate failure messages and logs recovery.
+        if (
+            record.levelno == logging.ERROR
+            and isinstance(record.args, tuple)
+            and any(isinstance(arg, UpdateFailedUnreachable) for arg in record.args)
+        ):
+            record.levelno = logging.INFO
+            record.levelname = "INFO"
+        return True
+
+    logging.getLogger(__name__).addFilter(_unreachable_log_level)
 from PIL import Image
 
 from .divoom_client import Client, DeviceError, InvalidToken, Json, Unreachable
