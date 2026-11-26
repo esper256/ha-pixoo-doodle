@@ -2,7 +2,7 @@
 
 Control a Divoom Wi-Fi display from Home Assistant. Draw on a Pixoo 16 or 64, show an image, scroll a message, or use a display as a light and clock in an automation. Normal polling and drawing use the local network.
 
-| Display | Support in v0.1 |
+| Display | Support in v0.2 |
 | --- | --- |
 | Wi-Fi Pixoo 16 (201) | Verified on hardware. The owner visually confirmed a 16×16 drawing. Brightness and clock restoration passed readback. |
 | Pixoo 64 (90/92/96) | Protocol-based support for both endpoint generations. Tested with simulated replies. |
@@ -22,6 +22,34 @@ In Home Assistant 2026.11 or newer, open **Settings → Marketplace → Add from
 Open **Settings → Devices & services → Add integration → Pixoo Doodle**. Choose **Find displays with Divoom** or enter an IPv4 address. Leave the panel powered on and connected to Wi-Fi. Initial identification of older displays uses Divoom's discovery service. Home Assistant and the display must share a public IP for that lookup. Hardware 90, 92 and 400 prompt for a LAN token from the device settings.
 
 **Configure** sets the poll interval (5–3600 seconds, default 30), minimum time between frame uploads (1–60 seconds, default 1) and local font (small, large or an allowlisted BDF file). Use **Reconfigure** after an address change. Removing the integration entry removes the device from Home Assistant.
+
+## Cloud feeds and the Media browser
+
+On a Pixoo 16 or 64, the **Cloud feed** selector starts one of the display’s Divoom feeds: **Recommended**, **Favorites**, or **Subscribed artists**. The last two use the account already associated with the panel. When firmware omits the active feed from its status reply, HA shows the last acknowledged selection until reload.
+
+Open **Media → Pixoo Doodle → your display** to browse artists, artwork or saved playlists. Search by artist or title. Thumbnails include the artist and original dimensions, and matching-size artwork appears first. Choose the display’s **Art player** as the playback target. The browser uses Divoom’s public web gallery and its downloadable images without an account. Its selection can differ from the mobile app. [Divoom Gallery](https://divoom.com/pages/divoom-gallery)
+
+### Make an artist mix
+
+1. In **Developer tools → Actions**, choose **Pixoo Doodle: Add to playlist**. Select the display and enter a name, such as **Kitchen art**.
+2. Open the media picker and choose an artist or an individual work. Run the action, then repeat with another artist. You can also pick a local image from **My media**.
+3. Open the display’s **Art player** and choose **Kitchen art** from its source list, or open **Playlists** in the Media browser. The player alternates artists, includes each artwork once per cycle, and shows its title and artist. Play, pause, next, stop and shuffle work from the entity or an automation.
+
+Use **Save playlist** to replace a mix or set the time per work (5–3600 seconds, default 60). Sources can be artist IDs shown in the browser, individual artwork IDs, local media files, or a local folder prefixed with `folder:`. A folder contributes its immediate image files. Each artist or folder contributes up to 200 works. This example uses illustrative IDs; substitute artists from your browser.
+
+```yaml
+action: pixoo_doodle.save_playlist
+data:
+  device_id: YOUR_DEVICE_ID
+  name: Kitchen art
+  seconds: 90
+  items:
+    - artist/12345
+    - artist/67890
+    - folder:media-source://media_source/local/family-drawings
+```
+
+Mixes are saved per display across HA restarts. Editing a mix changes the next playback session. Recent gallery images stay in a 32 MiB memory cache per display, so a running mix can continue with cached art or local files during a gallery outage. Pausing stops rotation; the current animation can keep looping on the panel. Selecting a feed or clock, drawing manually, or turning off the display light stops the rotation. Reloading or restarting HA leaves the art player idle.
 
 ## Controls and actions
 

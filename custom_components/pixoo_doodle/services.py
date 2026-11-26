@@ -85,6 +85,19 @@ FIELDS: dict[Any, Any] = {
         vol.Optional("page", default=1): integer(1, 10000),
     },
     "get_config": {},
+    "save_playlist": {
+        vol.Required("name"): str,
+        vol.Required("items"): vol.All([str], vol.Length(min=1, max=100)),
+        vol.Optional("seconds", default=60): integer(5, 3600),
+    },
+    "add_to_playlist": {
+        vol.Required("name"): str,
+        vol.Required("media"): vol.Any(
+            str,
+            vol.Schema({vol.Required("media_content_id"): str}, extra=vol.ALLOW_EXTRA),
+        ),
+    },
+    "delete_playlist": {vol.Required("name"): str},
 }
 DRAW = {
     "draw_text",
@@ -146,13 +159,19 @@ async def load_media(hass: HomeAssistant, source: str) -> bytes:
     return data
 
 
-async def draw(runtime: RuntimeData, action: str, args: Json) -> None:
+async def draw(
+    runtime: RuntimeData, action: str, args: Json, *, media_data: bytes | None = None
+) -> None:
     if runtime.canvas is None:
         raise invalid("unsupported")
     async with runtime.canvas_lock:
         hass = runtime.hass
         if action in ("show_image", "play_gif"):
-            data = await load_media(hass, args["source"])
+            data = (
+                media_data
+                if media_data is not None
+                else await load_media(hass, args["source"])
+            )
             frames = await hass.async_add_executor_job(
                 media,
                 data,
@@ -215,7 +234,24 @@ async def draw(runtime: RuntimeData, action: str, args: Json) -> None:
 async def dispatch(r: RuntimeData, action: str, args: dict[str, Any]) -> Json:
     family = r.client.model.family
     if action in DRAW:
+        if r.stop_rotation:
+            r.stop_rotation()
         await draw(r, action, args)
+    elif action in ("save_playlist", "add_to_playlist", "delete_playlist"):
+        if not r.client.model.canvas:
+            raise invalid("unsupported")
+        items = args.get("items")
+        if action == "add_to_playlist":
+            item = args["media"]
+            source = item["media_content_id"] if isinstance(item, dict) else item
+            items = [source]
+        await r.playlists.edit(
+            args["name"],
+            items,
+            args.get("seconds", 60),
+            append=action == "add_to_playlist",
+        )
+        r.async_update_listeners()
     elif action == "get_canvas":
         if not r.preview:
             raise invalid("no_preview")

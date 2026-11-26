@@ -38,6 +38,9 @@
       },
       "visualizer": {
         "default": "mdi:equalizer"
+      },
+      "cloud_feed": {
+        "default": "mdi:cloud-outline"
       }
     },
     "button": {
@@ -63,6 +66,11 @@
       },
       "firmware": {
         "default": "mdi:information-outline"
+      }
+    },
+    "media_player": {
+      "art_player": {
+        "default": "mdi:image-multiple"
       }
     }
   }

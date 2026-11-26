@@ -37,3 +37,8 @@ Port 9000 uses `/divoom_api`. The vendor's LAN checks report Times Frame firmwar
 There is third-party software with a 32-pixel canvas. A Wi-Fi Pixoo 32 hardware ID, wire payload and sample have yet to be established. Bluetooth Pixoo Max and Pixoo devices require a separate transport.
 
 [Official Pixoo 16 API](https://doc.divoom-gz.com/web/#/12/489) · [Vendor protocol notes](https://github.com/DivoomDevelop/divoom-wifi-python/blob/main/docs/PROTOCOL.md) · [Vendor LAN verification](https://github.com/DivoomDevelop/divoom-wifi-python/blob/main/docs/LAN_CHECKS.md) · [Third-party Pixoo toolkit](https://github.com/cyanheads/pixoo-toolkit)
+
+
+## v0.2 validation
+
+Cloud feed selection uses the Pixoo 16 and 64 documented indices 0 (recommended), 1 (favorites), and 2 (subscribed artists). The Pixoo 16 page also labels index 3 Album while giving a range of 0–2. That index is omitted pending confirmation. The selector and media playback were tested on simulated displays. Catalog discovery and decoding of a native 16×16 animation were checked against the public website independently of any device. [Pixoo 16 cloud-channel documentation](https://doc.divoom-gz.com/web/#/12/484)

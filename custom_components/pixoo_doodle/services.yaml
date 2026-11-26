@@ -398,3 +398,63 @@ get_config:
     config_entry_id:
       selector:
         text: {}
+save_playlist:
+  fields:
+    device_id:
+      selector:
+        device:
+          filter:
+            integration: pixoo_doodle
+          multiple: true
+    config_entry_id:
+      selector:
+        text: {}
+    name:
+      selector:
+        text: {}
+      required: true
+    items:
+      selector:
+        object: {}
+      required: true
+    seconds:
+      selector:
+        number:
+          min: 5
+          max: 3600
+          mode: box
+      required: false
+add_to_playlist:
+  fields:
+    device_id:
+      selector:
+        device:
+          filter:
+            integration: pixoo_doodle
+          multiple: true
+    config_entry_id:
+      selector:
+        text: {}
+    name:
+      selector:
+        text: {}
+      required: true
+    media:
+      selector:
+        media: {}
+      required: true
+delete_playlist:
+  fields:
+    device_id:
+      selector:
+        device:
+          filter:
+            integration: pixoo_doodle
+          multiple: true
+    config_entry_id:
+      selector:
+        text: {}
+    name:
+      selector:
+        text: {}
+      required: true

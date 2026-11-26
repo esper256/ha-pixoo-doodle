@@ -2,6 +2,7 @@
 
 import asyncio
 import logging
+from collections.abc import Callable
 from datetime import datetime, timedelta
 
 from homeassistant.config_entries import ConfigEntry
@@ -33,6 +34,8 @@ except ImportError:  # Introduced in Core 2026.12
 from PIL import Image
 
 from .divoom_client import Client, DeviceError, InvalidToken, Json, Unreachable
+from .gallery import Gallery
+from .playlists import Playlists
 
 DOMAIN = "pixoo_doodle"
 LOGGER = logging.getLogger(__name__)
@@ -61,6 +64,9 @@ class RuntimeData(DataUpdateCoordinator[Json]):
             if self.client.model.canvas
             else None
         )
+        self.gallery = Gallery(self.client.session)
+        self.playlists = Playlists(hass, entry.entry_id)
+        self.stop_rotation: Callable[[], None] | None = None
         self.canvas_lock = asyncio.Lock()
         self.preview: bytes | None = None
         self.preview_time: datetime | None = None
@@ -126,6 +132,20 @@ class RuntimeData(DataUpdateCoordinator[Json]):
     async def write(
         self, command: str, fields: Json, assume: Json | None = None
     ) -> None:
+        if self.stop_rotation and (
+            command.startswith(
+                (
+                    "Channel/SetIndex",
+                    "Channel/CloudIndex",
+                    "Channel/SetClock",
+                    "Channel/SetCustom",
+                    "Channel/SetEq",
+                    "Tools/",
+                )
+            )
+            or (command == "Channel/OnOffScreen" and fields.get("OnOff") == 0)
+        ):
+            self.stop_rotation()
         try:
             await self.client.command(command, **fields)
         except DeviceError as exc:

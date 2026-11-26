@@ -8,7 +8,16 @@ if TYPE_CHECKING:
 
     from .coordinator import PixooConfigEntry
 
-PLATFORMS = ("light", "number", "select", "sensor", "switch", "button", "image")
+PLATFORMS = (
+    "light",
+    "number",
+    "select",
+    "sensor",
+    "switch",
+    "button",
+    "image",
+    "media_player",
+)
 
 
 def _entry_only_config(config: ConfigType) -> ConfigType:
@@ -32,9 +41,17 @@ async def async_setup_entry(hass: HomeAssistant, entry: PixooConfigEntry) -> Non
 
     runtime = RuntimeData(hass, entry)
     await runtime.async_config_entry_first_refresh()
+    if runtime.client.model.canvas:
+        await runtime.playlists.load()
     entry.runtime_data = runtime
     await hass.config_entries.async_forward_entry_setups(entry, PLATFORMS)
 
 
 async def async_unload_entry(hass: HomeAssistant, entry: PixooConfigEntry) -> None:
     await hass.config_entries.async_unload_platforms_or_raise(entry, PLATFORMS)
+
+
+async def async_remove_entry(hass: HomeAssistant, entry: PixooConfigEntry) -> None:
+    from .playlists import store_for
+
+    await store_for(hass, entry.entry_id).async_remove()

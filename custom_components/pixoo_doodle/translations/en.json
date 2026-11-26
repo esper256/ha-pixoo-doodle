@@ -120,6 +120,14 @@
       },
       "visualizer": {
         "name": "Visualizer"
+      },
+      "cloud_feed": {
+        "name": "Cloud feed",
+        "state": {
+          "recommended": "Recommended",
+          "favorites": "Favorites",
+          "subscribed_artists": "Subscribed artists"
+        }
       }
     },
     "button": {
@@ -145,6 +153,11 @@
       },
       "firmware": {
         "name": "Firmware"
+      }
+    },
+    "media_player": {
+      "art_player": {
+        "name": "Art player"
       }
     }
   },
@@ -578,6 +591,66 @@
           "description": "Select one or more Pixoo Doodle devices."
         }
       }
+    },
+    "save_playlist": {
+      "name": "Save playlist",
+      "description": "Create or replace a named art mix on this display.",
+      "fields": {
+        "config_entry_id": {
+          "name": "Config entry id",
+          "description": "Use a config entry ID when calling without a device target."
+        },
+        "device_id": {
+          "name": "Display",
+          "description": "Select one or more Pixoo Doodle devices."
+        },
+        "name": {
+          "name": "Playlist name"
+        },
+        "items": {
+          "name": "Artist, artwork and local media references"
+        },
+        "seconds": {
+          "name": "Seconds per artwork"
+        }
+      }
+    },
+    "add_to_playlist": {
+      "name": "Add to playlist",
+      "description": "Append a selection from the Media browser to a named mix.",
+      "fields": {
+        "config_entry_id": {
+          "name": "Config entry id",
+          "description": "Use a config entry ID when calling without a device target."
+        },
+        "device_id": {
+          "name": "Display",
+          "description": "Select one or more Pixoo Doodle devices."
+        },
+        "name": {
+          "name": "Playlist name"
+        },
+        "media": {
+          "name": "Artwork or artist"
+        }
+      }
+    },
+    "delete_playlist": {
+      "name": "Delete playlist",
+      "description": "Delete a saved art mix from this display.",
+      "fields": {
+        "config_entry_id": {
+          "name": "Config entry id",
+          "description": "Use a config entry ID when calling without a device target."
+        },
+        "device_id": {
+          "name": "Display",
+          "description": "Select one or more Pixoo Doodle devices."
+        },
+        "name": {
+          "name": "Playlist name"
+        }
+      }
     }
   },
   "exceptions": {
@@ -598,6 +671,12 @@
     },
     "no_preview": {
       "message": "Push a drawing to create a preview."
+    },
+    "invalid_playlist": {
+      "message": "Check the playlist name and sources. Use a gallery artist, artwork, local media file or folder containing images."
+    },
+    "playback_failed": {
+      "message": "Artwork playback failed. Check the gallery connection, local media access and display availability."
     }
   },
   "issues": {

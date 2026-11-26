@@ -9,6 +9,12 @@ PARALLEL_UPDATES = 1
 
 CONTROLS = {
     "channel": (CHANNELS, "SelectIndex", "Channel/SetIndex", "SelectIndex"),
+    "cloud_feed": (
+        ["recommended", "favorites", "subscribed_artists"],
+        "CloudIndex",
+        "Channel/CloudIndex",
+        "Index",
+    ),
     "visualizer": (
         [str(i) for i in range(8)],
         "EqPosition",

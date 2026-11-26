@@ -53,9 +53,11 @@ async def test_lifecycle(core):
         }
         assert snapshot == {
             "display": "unknown",
+            "art_player": "idle",
             "brightness": "20",
             "channel": "faces",
             "custom_page": "unknown",
+            "cloud_feed": "unknown",
             "rotation": "0",
             "visualizer": "unknown",
             "clock_face": "84",
