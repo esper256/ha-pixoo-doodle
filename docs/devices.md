@@ -42,3 +42,17 @@ There is third-party software with a 32-pixel canvas. A Wi-Fi Pixoo 32 hardware 
 ## v0.2 validation
 
 Cloud feed selection uses the Pixoo 16 and 64 documented indices 0 (recommended), 1 (favorites), and 2 (subscribed artists). The Pixoo 16 page also labels index 3 Album while giving a range of 0–2. That index is omitted pending confirmation. The selector and media playback were tested on simulated displays. Catalog discovery and decoding of a native 16×16 animation were checked against the public website independently of any device. [Pixoo 16 cloud-channel documentation](https://doc.divoom-gz.com/web/#/12/484)
+
+## Home Assistant device page
+
+A Wi-Fi Pixoo 16 registers one device with 18 entities when the firmware version is unknown or supports the buzzer.
+
+| Device-page role | Entities |
+| --- | --- |
+| Everyday controls and preview | Display light, brightness percentage, channel, cloud feed, clock face, custom page, visualizer, art player, last drawing |
+| Configuration | Rotation, mirror and 24-hour clock |
+| Diagnostics | Hardware ID, firmware, resolution, current channel, endpoint and buzzer test |
+
+The endpoint and buzzer test are disabled by default. The last drawing is an image entity that previews an upload. The channel sensor advertises the same five choices as the channel selector. The firmware sensor can be unknown on the 16.
+
+Pixoo 64 adds a disabled-by-default restart button. Times Gate and Times Frame expose whole-device controls; their restart buttons also use Home Assistant’s restart device class. The Gate additionally documents a buzzer test. AstroToo has the smaller whole-device entity set. Tools such as the scoreboard and countdown remain device actions. The registry tests cover every supported hardware ID, device ownership, categories, classes, default enablement and buzzer firmware gating using simulated panels.

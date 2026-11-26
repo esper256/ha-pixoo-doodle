@@ -1,4 +1,5 @@
 from homeassistant.components.select import SelectEntity
+from homeassistant.const import EntityCategory
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers.entity_platform import AddConfigEntryEntitiesCallback
 
@@ -53,6 +54,8 @@ async def async_setup_entry(
 class Control(PixooEntity, SelectEntity):
     def __init__(self, runtime: RuntimeData, key: str) -> None:
         super().__init__(runtime, key)
+        if key == "rotation":
+            self._attr_entity_category = EntityCategory.CONFIG
         self._attr_options, self.field, self.command, self.param = CONTROLS[key]
 
     @property

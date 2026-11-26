@@ -1,5 +1,5 @@
-from homeassistant.components.number import NumberEntity
-from homeassistant.const import EntityCategory
+from homeassistant.components.number import NumberEntity, NumberMode
+from homeassistant.const import PERCENTAGE
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers.entity_platform import AddConfigEntryEntitiesCallback
 
@@ -18,11 +18,11 @@ async def async_setup_entry(
 
 
 class Brightness(PixooEntity, NumberEntity):
-    _attr_entity_category = EntityCategory.CONFIG
+    _attr_mode = NumberMode.SLIDER
     _attr_native_min_value = 0
     _attr_native_max_value = 100
     _attr_native_step = 1
-    _attr_native_unit_of_measurement = "%"
+    _attr_native_unit_of_measurement = PERCENTAGE
 
     @property
     def native_value(self) -> float | None:

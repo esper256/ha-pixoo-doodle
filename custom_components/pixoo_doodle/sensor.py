@@ -1,4 +1,4 @@
-from homeassistant.components.sensor import SensorEntity
+from homeassistant.components.sensor import SensorDeviceClass, SensorEntity
 from homeassistant.const import EntityCategory
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers.entity_platform import AddConfigEntryEntitiesCallback
@@ -26,6 +26,9 @@ class Diagnostic(PixooEntity, SensorEntity):
     def __init__(self, runtime: RuntimeData, key: str) -> None:
         super().__init__(runtime, key)
         self.key = key
+        if key == "current_channel":
+            self._attr_device_class = SensorDeviceClass.ENUM
+            self._attr_options = CHANNELS
         self._attr_entity_registry_enabled_default = key != "endpoint"
 
     @property

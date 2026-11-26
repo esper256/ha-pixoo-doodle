@@ -140,7 +140,14 @@
     },
     "sensor": {
       "current_channel": {
-        "name": "Current channel"
+        "name": "Current channel",
+        "state": {
+          "faces": "Faces",
+          "cloud": "Cloud",
+          "visualizer": "Visualizer",
+          "custom": "Custom",
+          "black_screen": "Black screen"
+        }
       },
       "hardware": {
         "name": "Hardware"

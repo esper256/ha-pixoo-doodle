@@ -24,7 +24,7 @@ class Model:
 
     @property
     def buzzer_firmware(self) -> int | None:
-        return 90109 if self.channels else None
+        return 90109 if self.family in ("pixoo16", "pixoo64", "gate") else None
 
     @property
     def native_text_firmware(self) -> int | None:

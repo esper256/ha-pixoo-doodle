@@ -1,4 +1,4 @@
-from homeassistant.components.button import ButtonEntity
+from homeassistant.components.button import ButtonDeviceClass, ButtonEntity
 from homeassistant.const import EntityCategory
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers.entity_platform import AddConfigEntryEntitiesCallback
@@ -35,6 +35,10 @@ class Action(PixooEntity, ButtonEntity):
         self, runtime: RuntimeData, key: str, command: str, fields: Json
     ) -> None:
         super().__init__(runtime, key)
+        if key == "reboot":
+            self._attr_device_class = ButtonDeviceClass.RESTART
+        else:
+            self._attr_entity_category = EntityCategory.DIAGNOSTIC
         self.command, self.fields = command, fields
 
     async def async_press(self) -> None:
