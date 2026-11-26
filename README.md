@@ -21,7 +21,7 @@ In Home Assistant 2026.11 or newer, open **Settings → Marketplace → Add from
 
 Open **Settings → Devices & services → Add integration → Pixoo Doodle**. Choose **Find displays with Divoom** or enter an IPv4 address. Leave the panel powered on and connected to Wi-Fi. Initial identification of older displays uses Divoom's discovery service. Home Assistant and the display must share a public IP for that lookup. Hardware 90, 92 and 400 prompt for a LAN token from the device settings.
 
-**Configure** sets the poll interval (5–3600 seconds, default 30), minimum time between frame uploads (1–60 seconds, default 1) and local pixel font size. Use **Reconfigure** after an address change. Removing the integration entry removes the device from Home Assistant.
+**Configure** sets the poll interval (5–3600 seconds, default 30), minimum time between frame uploads (1–60 seconds, default 1) and local font (small, large or an allowlisted BDF file). Use **Reconfigure** after an address change. Removing the integration entry removes the device from Home Assistant.
 
 ## Controls and actions
 
@@ -32,14 +32,11 @@ In **Developer tools → Actions**, select the device or pass its config entry I
 ```yaml
 sequence:
   - action: pixoo_doodle.fill
-    target: {device_id: YOUR_DEVICE_ID}
-    data: {color: "#001018", commit: false}
+    data: {device_id: YOUR_DEVICE_ID, color: "#001018", commit: false}
   - action: pixoo_doodle.draw_line
-    target: {device_id: YOUR_DEVICE_ID}
-    data: {points: [[1, 13], [14, 13]], color: "#42ff85"}
+    data: {device_id: YOUR_DEVICE_ID, points: [[1, 13], [14, 13]], color: "#42ff85"}
   - action: pixoo_doodle.draw_text
-    target: {device_id: YOUR_DEVICE_ID}
-    data: {text: "OK", font: small, align: center, color: "#ffffff"}
+    data: {device_id: YOUR_DEVICE_ID, text: "OK", font: small, align: center, color: "#ffffff"}
 ```
 
 Use `draw_rect` (optional `filled`), `draw_pixels`, `fill` or `clear` with `commit: false` to stage changes. The next committed edit sends the whole canvas. Request response data from a drawing action or call `get_canvas` to receive the preview PNG as base64 keyed by entry ID.
@@ -47,11 +44,9 @@ Use `draw_rect` (optional `filled`), `draw_pixels`, `fill` or `clear` with `comm
 ```yaml
 sequence:
   - action: pixoo_doodle.show_image
-    target: {device_id: YOUR_DEVICE_ID}
-    data: {source: "media-source://media_source/local/flower.png", fit: crop}
+    data: {device_id: YOUR_DEVICE_ID, source: "media-source://media_source/local/flower.png", fit: crop}
   - action: pixoo_doodle.play_gif
-    target: {device_id: YOUR_DEVICE_ID}
-    data: {source: "media-source://media_source/local/weather.gif", fit: fit, dither: true}
+    data: {device_id: YOUR_DEVICE_ID, source: "media-source://media_source/local/weather.gif", fit: fit, dither: true}
 ```
 
 Images can also come from an HTTP(S) URL or an absolute path in Home Assistant's `allowlist_external_dirs`. Home Assistant fetches and resizes the file before it reaches the display. Inputs are limited to 8 MiB and four megapixels. The preview shows the first frame of the most recent successful drawing.
@@ -67,8 +62,7 @@ triggers:
     to: "off"
 actions:
   - action: pixoo_doodle.scroll_text
-    target: {device_id: YOUR_DEVICE_ID}
-    data: {text: "Laundry ready", color: "#55ffaa", speed: 100}
+    data: {device_id: YOUR_DEVICE_ID, text: "Laundry ready", color: "#55ffaa", speed: 100}
 ```
 
 Other actions include `set_timer` (minute, second, status), `stopwatch` (0 pause, 1 start, 2 reset), `scoreboard` (red and blue scores), `play_buzzer`, `select_clock_face` (clock_id) and `refresh`. Query actions return font metadata, pages of clock IDs or a shareable device configuration with `get_fonts`, `get_faces` and `get_config`.

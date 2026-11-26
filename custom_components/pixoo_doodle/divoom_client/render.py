@@ -2,12 +2,13 @@
 
 from io import BytesIO
 from pathlib import Path
+from tempfile import TemporaryDirectory
 from typing import Any
 
-from PIL import Image, ImageDraw, ImageFont, ImageOps
+from PIL import BdfFontFile, Image, ImageDraw, ImageFont, ImageOps
 
 MAX_BYTES = 8 * 1024 * 1024
-FONTS = {"small": 9, "large": 14}
+FONTS = {"small": 8, "large": 16}
 type Frames = list[tuple[Image.Image, int]]
 
 
@@ -18,7 +19,12 @@ def png(image: Image.Image) -> bytes:
 
 
 def media(
-    data: bytes, size: tuple[int, int], animated: bool, fit: str, dither: bool
+    data: bytes,
+    size: tuple[int, int],
+    animated: bool,
+    fit: str,
+    dither: bool,
+    gamma: float = 1.0,
 ) -> Frames:
     frames: Frames = []
     with Image.open(BytesIO(data)) as source:
@@ -35,6 +41,9 @@ def media(
             image = (ImageOps.fit if fit == "crop" else ImageOps.pad)(
                 rgb, size, method=Image.Resampling.LANCZOS
             )
+            if gamma != 1.0:
+                curve = [round(255 * (value / 255) ** gamma) for value in range(256)]
+                image = image.point(curve * 3)
             if dither:
                 image = image.convert(
                     "P", palette=Image.Palette.WEB, dither=Image.Dither.FLOYDSTEINBERG
@@ -43,6 +52,25 @@ def media(
                 (image, max(10, min(60000, int(source.info.get("duration") or 100))))
             )
     return frames
+
+
+def load_font(name: str) -> ImageFont.ImageFont | ImageFont.FreeTypeFont:
+    if name in FONTS:
+        return ImageFont.truetype(
+            str(Path(__file__).with_name("fonts") / "Silkscreen-Regular.ttf"),
+            size=FONTS[name],
+        )
+    path = Path(name)
+    if path.suffix.lower() != ".bdf" or path.stat().st_size > 1024 * 1024:
+        raise ValueError("Expected a BDF pixel font under 1 MiB")
+    with path.open("rb") as stream, TemporaryDirectory() as directory:
+        try:
+            font = BdfFontFile.BdfFontFile(stream)
+        except (SyntaxError, KeyError, IndexError) as exc:
+            raise ValueError("Invalid BDF font") from exc
+        compiled = Path(directory) / "font.pil"
+        font.save(str(compiled))
+        return ImageFont.load(str(compiled))
 
 
 def render(canvas: Image.Image, action: str, args: dict[str, Any]) -> Frames:
@@ -64,10 +92,7 @@ def render(canvas: Image.Image, action: str, args: dict[str, Any]) -> Frames:
                 points, outline=color, fill=color if args.get("filled") else None
             )
     else:
-        font = ImageFont.truetype(
-            str(Path(__file__).with_name("fonts") / "Silkscreen-Regular.ttf"),
-            size=8 if args["font"] == "small" else 16,
-        )
+        font = load_font(args["font"])
         text = args["text"]
         width = round(draw.textlength(text, font=font))
         align = args.get("align", "left")

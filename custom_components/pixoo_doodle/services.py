@@ -33,7 +33,7 @@ COMMIT = {vol.Optional("commit", default=True): cv.boolean}
 POINT = vol.ExactSequence((integer(0, 127), integer(0, 127)))
 TEXT: dict[Any, Any] = {
     vol.Required("text"): vol.All(str, vol.Length(min=1, max=160)),
-    vol.Optional("font"): vol.In(FONTS),
+    vol.Optional("font"): str,
     vol.Optional("align", default="left"): vol.In(["left", "center", "right"]),
     vol.Optional("y", default=0): integer(0, 63),
     **COLOR,
@@ -42,6 +42,9 @@ MEDIA = {
     vol.Required("source"): str,
     vol.Optional("fit", default="fit"): vol.In(["fit", "crop"]),
     vol.Optional("dither", default=False): cv.boolean,
+    vol.Optional("gamma", default=1.0): vol.All(
+        vol.Coerce(float), vol.Range(min=0.1, max=4)
+    ),
 }
 SHAPES: dict[Any, Any] = {
     vol.Required("points"): vol.All([POINT], vol.Length(min=2, max=2)),
@@ -157,9 +160,22 @@ async def draw(runtime: RuntimeData, action: str, args: Json) -> None:
                 action == "play_gif",
                 args["fit"],
                 args["dither"],
+                args.get("gamma", 1.0),
             )
         else:
             args.setdefault("font", runtime.entry.options.get("default_font", "small"))
+            if action in ("draw_text", "scroll_text") and args["font"] not in FONTS:
+
+                def allowed_font() -> str:
+                    path = Path(args["font"]).resolve(strict=True)
+                    if (
+                        not hass.config.is_allowed_path(str(path))
+                        or path.suffix.lower() != ".bdf"
+                    ):
+                        raise invalid("invalid_drawing")
+                    return str(path)
+
+                args["font"] = await hass.async_add_executor_job(allowed_font)
             frames = await hass.async_add_executor_job(
                 render, runtime.canvas, action, args
             )
@@ -167,6 +183,7 @@ async def draw(runtime: RuntimeData, action: str, args: Json) -> None:
         if args.get("commit", True):
             native = (
                 action in ("draw_text", "scroll_text")
+                and args["font"] in FONTS
                 and runtime.client.model.native_text
                 and len(args["text"].encode()) < 512
                 and runtime.firmware_allows(

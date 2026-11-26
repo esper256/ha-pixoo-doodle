@@ -11,6 +11,15 @@ if TYPE_CHECKING:
 PLATFORMS = ("light", "number", "select", "sensor", "switch", "button", "image")
 
 
+def _entry_only_config(config: ConfigType) -> ConfigType:
+    from homeassistant.helpers import config_validation as cv
+
+    return cv.config_entry_only_config_schema("pixoo_doodle")(config)
+
+
+CONFIG_SCHEMA = _entry_only_config
+
+
 async def async_setup(hass: HomeAssistant, config: ConfigType) -> bool:
     from .services import async_setup_services
 

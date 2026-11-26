@@ -219,7 +219,7 @@ class OptionsFlow(config_entries.OptionsFlowWithReload):
                     ): vol.All(vol.Coerce(float), vol.Range(min=1, max=60)),
                     vol.Required(
                         "default_font", default=opts.get("default_font", "small")
-                    ): vol.In(["small", "large"]),
+                    ): str,
                 }
             ),
         )

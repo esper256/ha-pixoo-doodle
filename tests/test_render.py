@@ -49,3 +49,36 @@ def test_media():
     assert [d for _, d in frames] == [50, 100]
     image = media(png(im), (16, 16), False, "fit", True)[0][0]
     assert image.getpixel((0, 0)) == (0, 0, 0)
+
+
+def test_bdf_and_gamma(tmp_path):
+    bdf = tmp_path / "tiny.bdf"
+    bdf.write_text("""STARTFONT 2.1
+FONT tiny
+SIZE 3 75 75
+FONTBOUNDINGBOX 3 3 0 0
+STARTPROPERTIES 0
+ENDPROPERTIES
+CHARS 1
+STARTCHAR A
+ENCODING 65
+SWIDTH 1000 0
+DWIDTH 3 0
+BBX 3 3 0 0
+BITMAP
+40
+A0
+E0
+ENDCHAR
+ENDFONT
+""")
+    frame = render(
+        Image.new("RGB", (16, 16)), "draw_text", {"text": "A", "font": str(bdf)}
+    )[0][0]
+    assert frame.getbbox() is not None
+    src = png(Image.new("RGB", (16, 16), (128, 128, 128)))
+    assert media(src, (16, 16), False, "fit", False, 2)[0][0].getpixel((0, 0)) == (
+        64,
+        64,
+        64,
+    )

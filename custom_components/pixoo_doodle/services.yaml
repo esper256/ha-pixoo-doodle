@@ -1,18 +1,18 @@
 draw_text:
-  target:
-    device:
-    - integration: pixoo_doodle
   fields:
+    device_id:
+      selector:
+        device:
+          filter:
+            integration: pixoo_doodle
+          multiple: true
     text:
       selector:
         text: {}
       required: true
     font:
       selector:
-        select:
-          options:
-          - small
-          - large
+        text: {}
     align:
       selector:
         select:
@@ -33,20 +33,20 @@ draw_text:
       selector:
         text: {}
 scroll_text:
-  target:
-    device:
-    - integration: pixoo_doodle
   fields:
+    device_id:
+      selector:
+        device:
+          filter:
+            integration: pixoo_doodle
+          multiple: true
     text:
       selector:
         text: {}
       required: true
     font:
       selector:
-        select:
-          options:
-          - small
-          - large
+        text: {}
     align:
       selector:
         select:
@@ -73,10 +73,13 @@ scroll_text:
       selector:
         text: {}
 show_image:
-  target:
-    device:
-    - integration: pixoo_doodle
   fields:
+    device_id:
+      selector:
+        device:
+          filter:
+            integration: pixoo_doodle
+          multiple: true
     source:
       selector:
         text: {}
@@ -93,11 +96,21 @@ show_image:
     config_entry_id:
       selector:
         text: {}
+    gamma:
+      selector:
+        number:
+          min: 0.1
+          max: 4
+          step: 0.1
+          mode: box
 play_gif:
-  target:
-    device:
-    - integration: pixoo_doodle
   fields:
+    device_id:
+      selector:
+        device:
+          filter:
+            integration: pixoo_doodle
+          multiple: true
     source:
       selector:
         text: {}
@@ -114,11 +127,21 @@ play_gif:
     config_entry_id:
       selector:
         text: {}
+    gamma:
+      selector:
+        number:
+          min: 0.1
+          max: 4
+          step: 0.1
+          mode: box
 draw_pixels:
-  target:
-    device:
-    - integration: pixoo_doodle
   fields:
+    device_id:
+      selector:
+        device:
+          filter:
+            integration: pixoo_doodle
+          multiple: true
     points:
       selector:
         object: {}
@@ -133,10 +156,13 @@ draw_pixels:
       selector:
         text: {}
 draw_line:
-  target:
-    device:
-    - integration: pixoo_doodle
   fields:
+    device_id:
+      selector:
+        device:
+          filter:
+            integration: pixoo_doodle
+          multiple: true
     points:
       selector:
         object: {}
@@ -151,10 +177,13 @@ draw_line:
       selector:
         text: {}
 draw_rect:
-  target:
-    device:
-    - integration: pixoo_doodle
   fields:
+    device_id:
+      selector:
+        device:
+          filter:
+            integration: pixoo_doodle
+          multiple: true
     points:
       selector:
         object: {}
@@ -172,10 +201,13 @@ draw_rect:
       selector:
         text: {}
 fill:
-  target:
-    device:
-    - integration: pixoo_doodle
   fields:
+    device_id:
+      selector:
+        device:
+          filter:
+            integration: pixoo_doodle
+          multiple: true
     color:
       selector:
         text: {}
@@ -186,10 +218,13 @@ fill:
       selector:
         text: {}
 clear:
-  target:
-    device:
-    - integration: pixoo_doodle
   fields:
+    device_id:
+      selector:
+        device:
+          filter:
+            integration: pixoo_doodle
+          multiple: true
     commit:
       selector:
         boolean: {}
@@ -197,10 +232,13 @@ clear:
       selector:
         text: {}
 set_timer:
-  target:
-    device:
-    - integration: pixoo_doodle
   fields:
+    device_id:
+      selector:
+        device:
+          filter:
+            integration: pixoo_doodle
+          multiple: true
     minute:
       selector:
         number:
@@ -224,10 +262,13 @@ set_timer:
       selector:
         text: {}
 stopwatch:
-  target:
-    device:
-    - integration: pixoo_doodle
   fields:
+    device_id:
+      selector:
+        device:
+          filter:
+            integration: pixoo_doodle
+          multiple: true
     status:
       selector:
         number:
@@ -239,10 +280,13 @@ stopwatch:
       selector:
         text: {}
 scoreboard:
-  target:
-    device:
-    - integration: pixoo_doodle
   fields:
+    device_id:
+      selector:
+        device:
+          filter:
+            integration: pixoo_doodle
+          multiple: true
     blue:
       selector:
         number:
@@ -261,18 +305,24 @@ scoreboard:
       selector:
         text: {}
 play_buzzer:
-  target:
-    device:
-    - integration: pixoo_doodle
   fields:
+    device_id:
+      selector:
+        device:
+          filter:
+            integration: pixoo_doodle
+          multiple: true
     config_entry_id:
       selector:
         text: {}
 select_clock_face:
-  target:
-    device:
-    - integration: pixoo_doodle
   fields:
+    device_id:
+      selector:
+        device:
+          filter:
+            integration: pixoo_doodle
+          multiple: true
     clock_id:
       selector:
         number:
@@ -284,34 +334,46 @@ select_clock_face:
       selector:
         text: {}
 refresh:
-  target:
-    device:
-    - integration: pixoo_doodle
   fields:
+    device_id:
+      selector:
+        device:
+          filter:
+            integration: pixoo_doodle
+          multiple: true
     config_entry_id:
       selector:
         text: {}
 get_canvas:
-  target:
-    device:
-    - integration: pixoo_doodle
   fields:
+    device_id:
+      selector:
+        device:
+          filter:
+            integration: pixoo_doodle
+          multiple: true
     config_entry_id:
       selector:
         text: {}
 get_fonts:
-  target:
-    device:
-    - integration: pixoo_doodle
   fields:
+    device_id:
+      selector:
+        device:
+          filter:
+            integration: pixoo_doodle
+          multiple: true
     config_entry_id:
       selector:
         text: {}
 get_faces:
-  target:
-    device:
-    - integration: pixoo_doodle
   fields:
+    device_id:
+      selector:
+        device:
+          filter:
+            integration: pixoo_doodle
+          multiple: true
     dial_type:
       selector:
         text: {}
@@ -326,10 +388,13 @@ get_faces:
       selector:
         text: {}
 get_config:
-  target:
-    device:
-    - integration: pixoo_doodle
   fields:
+    device_id:
+      selector:
+        device:
+          filter:
+            integration: pixoo_doodle
+          multiple: true
     config_entry_id:
       selector:
         text: {}

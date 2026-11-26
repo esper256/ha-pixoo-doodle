@@ -69,7 +69,7 @@
         "data": {
           "poll_interval": "Polling interval (seconds)",
           "push_throttle": "Minimum time between frames (seconds)",
-          "default_font": "Canvas font size"
+          "default_font": "Canvas font (small, large or allowlisted BDF path)"
         }
       }
     }
@@ -159,7 +159,7 @@
         },
         "font": {
           "name": "Font",
-          "description": "Font."
+          "description": "Use small, large or an allowlisted BDF font path."
         },
         "align": {
           "name": "Align",
@@ -176,6 +176,10 @@
         "config_entry_id": {
           "name": "Config entry id",
           "description": "Use a config entry ID when calling without a device target."
+        },
+        "device_id": {
+          "name": "Display",
+          "description": "Select one or more Pixoo Doodle devices."
         }
       }
     },
@@ -189,7 +193,7 @@
         },
         "font": {
           "name": "Font",
-          "description": "Font."
+          "description": "Use small, large or an allowlisted BDF font path."
         },
         "align": {
           "name": "Align",
@@ -210,6 +214,10 @@
         "config_entry_id": {
           "name": "Config entry id",
           "description": "Use a config entry ID when calling without a device target."
+        },
+        "device_id": {
+          "name": "Display",
+          "description": "Select one or more Pixoo Doodle devices."
         }
       }
     },
@@ -232,6 +240,14 @@
         "config_entry_id": {
           "name": "Config entry id",
           "description": "Use a config entry ID when calling without a device target."
+        },
+        "device_id": {
+          "name": "Display",
+          "description": "Select one or more Pixoo Doodle devices."
+        },
+        "gamma": {
+          "name": "Gamma",
+          "description": "Pixel brightness curve. Use 1 for unchanged levels or increase it to darken midtones."
         }
       }
     },
@@ -254,6 +270,14 @@
         "config_entry_id": {
           "name": "Config entry id",
           "description": "Use a config entry ID when calling without a device target."
+        },
+        "device_id": {
+          "name": "Display",
+          "description": "Select one or more Pixoo Doodle devices."
+        },
+        "gamma": {
+          "name": "Gamma",
+          "description": "Pixel brightness curve. Use 1 for unchanged levels or increase it to darken midtones."
         }
       }
     },
@@ -276,6 +300,10 @@
         "config_entry_id": {
           "name": "Config entry id",
           "description": "Use a config entry ID when calling without a device target."
+        },
+        "device_id": {
+          "name": "Display",
+          "description": "Select one or more Pixoo Doodle devices."
         }
       }
     },
@@ -298,6 +326,10 @@
         "config_entry_id": {
           "name": "Config entry id",
           "description": "Use a config entry ID when calling without a device target."
+        },
+        "device_id": {
+          "name": "Display",
+          "description": "Select one or more Pixoo Doodle devices."
         }
       }
     },
@@ -324,6 +356,10 @@
         "config_entry_id": {
           "name": "Config entry id",
           "description": "Use a config entry ID when calling without a device target."
+        },
+        "device_id": {
+          "name": "Display",
+          "description": "Select one or more Pixoo Doodle devices."
         }
       }
     },
@@ -342,6 +378,10 @@
         "config_entry_id": {
           "name": "Config entry id",
           "description": "Use a config entry ID when calling without a device target."
+        },
+        "device_id": {
+          "name": "Display",
+          "description": "Select one or more Pixoo Doodle devices."
         }
       }
     },
@@ -356,6 +396,10 @@
         "config_entry_id": {
           "name": "Config entry id",
           "description": "Use a config entry ID when calling without a device target."
+        },
+        "device_id": {
+          "name": "Display",
+          "description": "Select one or more Pixoo Doodle devices."
         }
       }
     },
@@ -378,6 +422,10 @@
         "config_entry_id": {
           "name": "Config entry id",
           "description": "Use a config entry ID when calling without a device target."
+        },
+        "device_id": {
+          "name": "Display",
+          "description": "Select one or more Pixoo Doodle devices."
         }
       }
     },
@@ -392,6 +440,10 @@
         "config_entry_id": {
           "name": "Config entry id",
           "description": "Use a config entry ID when calling without a device target."
+        },
+        "device_id": {
+          "name": "Display",
+          "description": "Select one or more Pixoo Doodle devices."
         }
       }
     },
@@ -410,6 +462,10 @@
         "config_entry_id": {
           "name": "Config entry id",
           "description": "Use a config entry ID when calling without a device target."
+        },
+        "device_id": {
+          "name": "Display",
+          "description": "Select one or more Pixoo Doodle devices."
         }
       }
     },
@@ -420,6 +476,10 @@
         "config_entry_id": {
           "name": "Config entry id",
           "description": "Use a config entry ID when calling without a device target."
+        },
+        "device_id": {
+          "name": "Display",
+          "description": "Select one or more Pixoo Doodle devices."
         }
       }
     },
@@ -434,6 +494,10 @@
         "config_entry_id": {
           "name": "Config entry id",
           "description": "Use a config entry ID when calling without a device target."
+        },
+        "device_id": {
+          "name": "Display",
+          "description": "Select one or more Pixoo Doodle devices."
         }
       }
     },
@@ -444,6 +508,10 @@
         "config_entry_id": {
           "name": "Config entry id",
           "description": "Use a config entry ID when calling without a device target."
+        },
+        "device_id": {
+          "name": "Display",
+          "description": "Select one or more Pixoo Doodle devices."
         }
       }
     },
@@ -454,6 +522,10 @@
         "config_entry_id": {
           "name": "Config entry id",
           "description": "Use a config entry ID when calling without a device target."
+        },
+        "device_id": {
+          "name": "Display",
+          "description": "Select one or more Pixoo Doodle devices."
         }
       }
     },
@@ -464,6 +536,10 @@
         "config_entry_id": {
           "name": "Config entry id",
           "description": "Use a config entry ID when calling without a device target."
+        },
+        "device_id": {
+          "name": "Display",
+          "description": "Select one or more Pixoo Doodle devices."
         }
       }
     },
@@ -482,6 +558,10 @@
         "config_entry_id": {
           "name": "Config entry id",
           "description": "Use a config entry ID when calling without a device target."
+        },
+        "device_id": {
+          "name": "Display",
+          "description": "Select one or more Pixoo Doodle devices."
         }
       }
     },
@@ -492,6 +572,10 @@
         "config_entry_id": {
           "name": "Config entry id",
           "description": "Use a config entry ID when calling without a device target."
+        },
+        "device_id": {
+          "name": "Display",
+          "description": "Select one or more Pixoo Doodle devices."
         }
       }
     }
