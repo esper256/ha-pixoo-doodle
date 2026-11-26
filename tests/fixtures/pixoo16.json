@@ -1,0 +1,38 @@
+{
+  "Channel/GetAllConf": {
+    "error_code": 0,
+    "Brightness": 20,
+    "RotationFlag": 0,
+    "ClockTime": 0,
+    "GalleryTime": 0,
+    "SingleGalleyTime": -1,
+    "PowerOnChannelId": 0,
+    "CurClockId": 84,
+    "Time24Flag": 0,
+    "TemperatureMode": 1,
+    "GyrateAngle": 0,
+    "MirrorFlag": 0
+  },
+  "Channel/GetIndex": {
+    "error_code": 0,
+    "SelectIndex": 0
+  },
+  "Draw/GetHttpGifId": {
+    "error_code": 0,
+    "PicId": 1
+  },
+  "Channel/GetClockInfo": {
+    "error_code": 0,
+    "ClockId": 84,
+    "Brightness": 20
+  },
+  "Device/GetHardwareVersion": {
+    "error_code": "Request data illegal json"
+  },
+  "Sys/GetUtcTime": {
+    "error_code": "Request data illegal json"
+  },
+  "Tools/GetTimerStatus": {
+    "error_code": "Request data illegal json"
+  }
+}
