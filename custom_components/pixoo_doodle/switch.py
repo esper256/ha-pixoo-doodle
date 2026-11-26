@@ -1,5 +1,6 @@
 from homeassistant.components.switch import SwitchEntity
 from homeassistant.const import EntityCategory
+
 from .entity import PixooEntity
 
 PARALLEL_UPDATES = 1

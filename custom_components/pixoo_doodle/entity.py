@@ -1,7 +1,8 @@
 """Common device identity and entity naming."""
 
-from homeassistant.helpers.device_registry import DeviceInfo, CONNECTION_NETWORK_MAC
+from homeassistant.helpers.device_registry import CONNECTION_NETWORK_MAC, DeviceInfo
 from homeassistant.helpers.update_coordinator import CoordinatorEntity
+
 from .coordinator import DOMAIN, RuntimeData
 
 CHANNELS = ["faces", "cloud", "visualizer", "custom", "black_screen"]

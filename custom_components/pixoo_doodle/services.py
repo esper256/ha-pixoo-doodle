@@ -4,15 +4,18 @@ from base64 import b64encode
 from datetime import UTC, datetime
 from pathlib import Path
 from typing import Any
-from aiohttp import ClientError, ClientTimeout
+
 import probatio as vol
-from PIL import Image
+from aiohttp import ClientError, ClientTimeout
 from homeassistant.components import media_source
 from homeassistant.config_entries import ConfigEntryState
 from homeassistant.core import HomeAssistant, ServiceCall, SupportsResponse, callback
 from homeassistant.exceptions import HomeAssistantError, ServiceValidationError
-from homeassistant.helpers import config_validation as cv, device_registry as dr
+from homeassistant.helpers import config_validation as cv
+from homeassistant.helpers import device_registry as dr
 from homeassistant.helpers.aiohttp_client import async_get_clientsession
+from PIL import Image
+
 from .button import BUZZ
 from .coordinator import DOMAIN, RuntimeData
 from .divoom_client import DeviceError
@@ -27,7 +30,7 @@ def integer(low, high):
 COLOR = {vol.Optional("color", default="#ffffff"): vol.Match(r"^#[a-fA-F0-9]{6}$")}
 COMMIT = {vol.Optional("commit", default=True): cv.boolean}
 POINT = vol.ExactSequence((integer(0, 127), integer(0, 127)))
-TEXT = {
+TEXT: dict[Any, Any] = {
     vol.Required("text"): vol.All(str, vol.Length(min=1, max=160)),
     vol.Optional("font"): vol.In(FONTS),
     vol.Optional("align", default="left"): vol.In(["left", "center", "right"]),
@@ -39,12 +42,12 @@ MEDIA = {
     vol.Optional("fit", default="fit"): vol.In(["fit", "crop"]),
     vol.Optional("dither", default=False): cv.boolean,
 }
-SHAPES = {
+SHAPES: dict[Any, Any] = {
     vol.Required("points"): vol.All([POINT], vol.Length(min=2, max=2)),
     **COLOR,
     **COMMIT,
 }
-FIELDS = {
+FIELDS: dict[Any, Any] = {
     "draw_text": TEXT,
     "scroll_text": {**TEXT, vol.Optional("speed", default=100): integer(10, 1000)},
     "show_image": MEDIA,
@@ -165,7 +168,9 @@ async def draw(runtime, action, args):
                 action in ("draw_text", "scroll_text")
                 and runtime.client.model.native_text
                 and len(args["text"].encode()) < 512
-                and int(runtime.data.get("FirmwareVersion", 90102)) >= 90102
+                and runtime.firmware_allows(
+                    runtime.client.model.native_text_firmware or 0
+                )
             )
             send = [(runtime.canvas, 100)] if native else frames
             await runtime.client.push([(im.tobytes(), delay) for im, delay in send])
@@ -204,20 +209,35 @@ async def dispatch(r: RuntimeData, action: str, args: dict[str, Any]):
     elif action in ("get_fonts", "get_faces"):
         if not r.client.model.canvas:
             raise invalid("unsupported")
-        return await catalog(
-            r.client.session,
-            "faces" if action == "get_faces" else "fonts",
-            args.get("dial_type", ""),
-            args.get("page", 1),
-        )
+        from homeassistant.helpers import issue_registry as ir
+
+        try:
+            result = await catalog(
+                r.client.session,
+                "faces" if action == "get_faces" else "fonts",
+                args.get("dial_type", ""),
+                args.get("page", 1),
+            )
+        except DeviceError:
+            r.issue("cloud_unreachable")
+            raise
+        ir.async_delete_issue(r.hass, DOMAIN, f"{r.entry.entry_id}_cloud_unreachable")
+        if action == "get_faces":
+            r.faces.update(
+                row["ClockId"]
+                for row in result.get("DialList", [])
+                if isinstance(row, dict) and type(row.get("ClockId")) is int
+            )
+            r.async_update_listeners()
+        return result
     elif action == "refresh":
         await r.async_refresh()
         if not r.last_update_success:
             raise DeviceError
     elif action == "play_buzzer":
-        if not r.client.model.canvas:
+        if (minimum := r.client.model.buzzer_firmware) is None:
             raise invalid("unsupported")
-        if int(r.data.get("FirmwareVersion", 90109)) < 90109:
+        if not r.firmware_allows(minimum):
             r.issue("old_firmware")
             raise invalid("unsupported")
         await r.write("Device/PlayBuzzer", BUZZ)
@@ -272,6 +292,7 @@ def async_setup_services(hass: HomeAssistant) -> None:
         ):
             raise invalid("invalid_target")
         for entry in entries:
+            assert entry is not None
             try:
                 result[entry.entry_id] = await dispatch(
                     entry.runtime_data, call.service, args.copy()

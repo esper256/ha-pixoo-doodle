@@ -1,5 +1,6 @@
 from homeassistant.components.sensor import SensorEntity
 from homeassistant.const import EntityCategory
+
 from .entity import CHANNELS, PixooEntity
 
 PARALLEL_UPDATES = 0
@@ -7,7 +8,7 @@ PARALLEL_UPDATES = 0
 
 async def async_setup_entry(hass, entry, async_add_entities):
     keys = ["hardware", "firmware", "resolution", "endpoint"]
-    if entry.runtime_data.client.model.canvas:
+    if entry.runtime_data.client.model.channels:
         keys.append("current_channel")
     async_add_entities(Diagnostic(entry.runtime_data, key) for key in keys)
 

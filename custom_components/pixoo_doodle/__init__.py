@@ -5,6 +5,7 @@ from typing import TYPE_CHECKING
 if TYPE_CHECKING:
     from homeassistant.core import HomeAssistant
     from homeassistant.helpers.typing import ConfigType
+
     from .coordinator import PixooConfigEntry
 
 PLATFORMS = ("light", "number", "select", "sensor", "switch", "button", "image")

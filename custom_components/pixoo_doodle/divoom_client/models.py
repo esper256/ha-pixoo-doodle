@@ -15,6 +15,28 @@ class Model:
     token_field: str | None = None
 
     @property
+    def channels(self) -> bool:
+        return self.family in ("pixoo16", "pixoo64")
+
+    @property
+    def supports_reboot(self) -> bool:
+        return self.family in ("pixoo64", "gate", "frame")
+
+    @property
+    def buzzer_firmware(self) -> int | None:
+        return 90109 if self.channels else None
+
+    @property
+    def native_text_firmware(self) -> int | None:
+        return 90102 if self.family == "pixoo64" else None
+
+    @property
+    def gif_format(self) -> str | None:
+        return {"pixoo16": "url_list", "pixoo64": "file_name", "gate": "lcd_list"}.get(
+            self.family
+        )
+
+    @property
     def canvas(self) -> bool:
         return self.family in ("pixoo16", "pixoo64")
 

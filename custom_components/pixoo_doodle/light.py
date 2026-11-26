@@ -1,4 +1,5 @@
 from homeassistant.components.light import ATTR_BRIGHTNESS, ColorMode, LightEntity
+
 from .entity import PixooEntity
 
 PARALLEL_UPDATES = 1

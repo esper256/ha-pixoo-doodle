@@ -1,10 +1,17 @@
 from homeassistant.components.select import SelectEntity
+
 from .entity import CHANNELS, PixooEntity
 
 PARALLEL_UPDATES = 1
 
 CONTROLS = {
     "channel": (CHANNELS, "SelectIndex", "Channel/SetIndex", "SelectIndex"),
+    "visualizer": (
+        [str(i) for i in range(8)],
+        "EqPosition",
+        "Channel/SetEqPosition",
+        "EqPosition",
+    ),
     "custom_page": (
         ["0", "1", "2"],
         "CustomPageIndex",
@@ -21,8 +28,13 @@ CONTROLS = {
 
 
 async def async_setup_entry(hass, entry, async_add_entities):
-    if entry.runtime_data.client.model.canvas:
-        async_add_entities(Control(entry.runtime_data, key) for key in CONTROLS)
+    if entry.runtime_data.client.model.channels:
+        async_add_entities(
+            [
+                *(Control(entry.runtime_data, key) for key in CONTROLS),
+                Face(entry.runtime_data, "clock_face"),
+            ]
+        )
 
 
 class Control(PixooEntity, SelectEntity):
@@ -43,4 +55,23 @@ class Control(PixooEntity, SelectEntity):
         index = self.options.index(option)
         await self.coordinator.write(
             self.command, {self.param: index}, {self.field: index}
+        )
+
+
+class Face(PixooEntity, SelectEntity):
+    @property
+    def current_option(self):
+        face = self.coordinator.data.get("CurClockId")
+        return str(face) if face is not None else None
+
+    @property
+    def options(self):
+        choices = {str(face) for face in self.coordinator.faces}
+        if self.current_option is not None:
+            choices.add(self.current_option)
+        return sorted(choices, key=int)
+
+    async def async_select_option(self, option):
+        await self.coordinator.write(
+            "Channel/SetClockSelectId", {"ClockId": int(option)}
         )

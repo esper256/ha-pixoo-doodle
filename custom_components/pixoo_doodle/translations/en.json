@@ -1,0 +1,533 @@
+{
+  "title": "Pixoo Doodle",
+  "config": {
+    "step": {
+      "user": {
+        "title": "Connect a display",
+        "menu_options": {
+          "cloud": "Find displays with Divoom",
+          "manual": "Enter the display address"
+        }
+      },
+      "cloud": {
+        "title": "Choose a display",
+        "data": {
+          "device": "Wi-Fi display"
+        }
+      },
+      "manual": {
+        "title": "Connect by address",
+        "description": "Older displays use Divoom cloud discovery for initial identification.",
+        "data": {
+          "host": "IPv4 address"
+        }
+      },
+      "reconfigure": {
+        "title": "Update display address",
+        "data": {
+          "host": "IPv4 address"
+        }
+      },
+      "token": {
+        "title": "Authenticate with the display",
+        "data": {
+          "token": "LAN token"
+        }
+      }
+    },
+    "error": {
+      "cannot_connect": "The display did not answer on either LAN endpoint.",
+      "identity_missing": "Divoom did not identify a supported device at this address. Check its Wi-Fi connection and that Home Assistant shares its public IP.",
+      "unknown_hardware": "This hardware profile is unavailable.",
+      "no_devices": "No supported displays were found on this network.",
+      "invalid_host": "Enter an IPv4 address.",
+      "cloud_unreachable": "Divoom discovery is unavailable. Check the Internet connection and try again.",
+      "invalid_auth": "Check the LAN token in the display settings.",
+      "already_configured": "This display is already configured.",
+      "unique_id_mismatch": "The address belongs to a different display.",
+      "reauth_successful": "Token updated.",
+      "reconfigure_successful": "Display address updated."
+    },
+    "abort": {
+      "cannot_connect": "The display did not answer on either LAN endpoint.",
+      "identity_missing": "Divoom did not identify a supported device at this address. Check its Wi-Fi connection and that Home Assistant shares its public IP.",
+      "unknown_hardware": "This hardware profile is unavailable.",
+      "no_devices": "No supported displays were found on this network.",
+      "invalid_host": "Enter an IPv4 address.",
+      "cloud_unreachable": "Divoom discovery is unavailable. Check the Internet connection and try again.",
+      "invalid_auth": "Check the LAN token in the display settings.",
+      "already_configured": "This display is already configured.",
+      "unique_id_mismatch": "The address belongs to a different display.",
+      "reauth_successful": "Token updated.",
+      "reconfigure_successful": "Display address updated."
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "title": "Display options",
+        "data": {
+          "poll_interval": "Polling interval (seconds)",
+          "push_throttle": "Minimum time between frames (seconds)",
+          "default_font": "Canvas font size"
+        }
+      }
+    }
+  },
+  "entity": {
+    "light": {
+      "display": {
+        "name": "Display"
+      }
+    },
+    "image": {
+      "preview": {
+        "name": "Last drawing"
+      }
+    },
+    "number": {
+      "brightness": {
+        "name": "Brightness"
+      }
+    },
+    "switch": {
+      "hour24": {
+        "name": "24-hour clock"
+      },
+      "mirror": {
+        "name": "Mirror"
+      }
+    },
+    "select": {
+      "channel": {
+        "name": "Channel",
+        "state": {
+          "faces": "Faces",
+          "cloud": "Cloud",
+          "visualizer": "Visualizer",
+          "custom": "Custom",
+          "black_screen": "Black screen"
+        }
+      },
+      "custom_page": {
+        "name": "Custom page"
+      },
+      "rotation": {
+        "name": "Rotation"
+      },
+      "clock_face": {
+        "name": "Clock face"
+      },
+      "visualizer": {
+        "name": "Visualizer"
+      }
+    },
+    "button": {
+      "buzzer": {
+        "name": "Test buzzer"
+      },
+      "reboot": {
+        "name": "Restart display"
+      }
+    },
+    "sensor": {
+      "current_channel": {
+        "name": "Current channel"
+      },
+      "hardware": {
+        "name": "Hardware"
+      },
+      "endpoint": {
+        "name": "Endpoint"
+      },
+      "resolution": {
+        "name": "Resolution"
+      },
+      "firmware": {
+        "name": "Firmware"
+      }
+    }
+  },
+  "services": {
+    "draw_text": {
+      "name": "Draw text",
+      "description": "Render a line of text on the canvas.",
+      "fields": {
+        "text": {
+          "name": "Text",
+          "description": "Text."
+        },
+        "font": {
+          "name": "Font",
+          "description": "Font."
+        },
+        "align": {
+          "name": "Align",
+          "description": "Align."
+        },
+        "y": {
+          "name": "Y",
+          "description": "Y."
+        },
+        "color": {
+          "name": "Color",
+          "description": "RGB hex color such as #00ff80."
+        },
+        "config_entry_id": {
+          "name": "Config entry id",
+          "description": "Use a config entry ID when calling without a device target."
+        }
+      }
+    },
+    "scroll_text": {
+      "name": "Scroll text",
+      "description": "Scroll a line of text across the display.",
+      "fields": {
+        "text": {
+          "name": "Text",
+          "description": "Text."
+        },
+        "font": {
+          "name": "Font",
+          "description": "Font."
+        },
+        "align": {
+          "name": "Align",
+          "description": "Align."
+        },
+        "y": {
+          "name": "Y",
+          "description": "Y."
+        },
+        "color": {
+          "name": "Color",
+          "description": "RGB hex color such as #00ff80."
+        },
+        "speed": {
+          "name": "Speed",
+          "description": "Milliseconds between scroll steps."
+        },
+        "config_entry_id": {
+          "name": "Config entry id",
+          "description": "Use a config entry ID when calling without a device target."
+        }
+      }
+    },
+    "show_image": {
+      "name": "Show image",
+      "description": "Size and display the first frame of an image.",
+      "fields": {
+        "source": {
+          "name": "Source",
+          "description": "Image URL, media-source URI or allowlisted absolute path."
+        },
+        "fit": {
+          "name": "Fit",
+          "description": "Fit pads the image. Crop fills the panel."
+        },
+        "dither": {
+          "name": "Dither",
+          "description": "Dither."
+        },
+        "config_entry_id": {
+          "name": "Config entry id",
+          "description": "Use a config entry ID when calling without a device target."
+        }
+      }
+    },
+    "play_gif": {
+      "name": "Play gif",
+      "description": "Play up to 40 resized animation frames.",
+      "fields": {
+        "source": {
+          "name": "Source",
+          "description": "Image URL, media-source URI or allowlisted absolute path."
+        },
+        "fit": {
+          "name": "Fit",
+          "description": "Fit pads the image. Crop fills the panel."
+        },
+        "dither": {
+          "name": "Dither",
+          "description": "Dither."
+        },
+        "config_entry_id": {
+          "name": "Config entry id",
+          "description": "Use a config entry ID when calling without a device target."
+        }
+      }
+    },
+    "draw_pixels": {
+      "name": "Draw pixels",
+      "description": "Color individual pixels on the canvas.",
+      "fields": {
+        "points": {
+          "name": "Points",
+          "description": "List of [x, y] pixel coordinates. The origin is the top-left pixel."
+        },
+        "color": {
+          "name": "Color",
+          "description": "RGB hex color such as #00ff80."
+        },
+        "commit": {
+          "name": "Commit",
+          "description": "Send the canvas to the display after this edit."
+        },
+        "config_entry_id": {
+          "name": "Config entry id",
+          "description": "Use a config entry ID when calling without a device target."
+        }
+      }
+    },
+    "draw_line": {
+      "name": "Draw line",
+      "description": "Draw a line between two pixel coordinates.",
+      "fields": {
+        "points": {
+          "name": "Points",
+          "description": "List of [x, y] pixel coordinates. The origin is the top-left pixel."
+        },
+        "color": {
+          "name": "Color",
+          "description": "RGB hex color such as #00ff80."
+        },
+        "commit": {
+          "name": "Commit",
+          "description": "Send the canvas to the display after this edit."
+        },
+        "config_entry_id": {
+          "name": "Config entry id",
+          "description": "Use a config entry ID when calling without a device target."
+        }
+      }
+    },
+    "draw_rect": {
+      "name": "Draw rect",
+      "description": "Draw a rectangle between opposite corners.",
+      "fields": {
+        "points": {
+          "name": "Points",
+          "description": "List of [x, y] pixel coordinates. The origin is the top-left pixel."
+        },
+        "color": {
+          "name": "Color",
+          "description": "RGB hex color such as #00ff80."
+        },
+        "commit": {
+          "name": "Commit",
+          "description": "Send the canvas to the display after this edit."
+        },
+        "filled": {
+          "name": "Filled",
+          "description": "Filled."
+        },
+        "config_entry_id": {
+          "name": "Config entry id",
+          "description": "Use a config entry ID when calling without a device target."
+        }
+      }
+    },
+    "fill": {
+      "name": "Fill",
+      "description": "Fill the canvas with a color.",
+      "fields": {
+        "color": {
+          "name": "Color",
+          "description": "RGB hex color such as #00ff80."
+        },
+        "commit": {
+          "name": "Commit",
+          "description": "Send the canvas to the display after this edit."
+        },
+        "config_entry_id": {
+          "name": "Config entry id",
+          "description": "Use a config entry ID when calling without a device target."
+        }
+      }
+    },
+    "clear": {
+      "name": "Clear",
+      "description": "Clear the canvas to black.",
+      "fields": {
+        "commit": {
+          "name": "Commit",
+          "description": "Send the canvas to the display after this edit."
+        },
+        "config_entry_id": {
+          "name": "Config entry id",
+          "description": "Use a config entry ID when calling without a device target."
+        }
+      }
+    },
+    "set_timer": {
+      "name": "Set timer",
+      "description": "Start or stop the countdown timer.",
+      "fields": {
+        "minute": {
+          "name": "Minute",
+          "description": "Minute."
+        },
+        "second": {
+          "name": "Second",
+          "description": "Second."
+        },
+        "status": {
+          "name": "Status",
+          "description": "0 stops, 1 starts and 2 resets the stopwatch."
+        },
+        "config_entry_id": {
+          "name": "Config entry id",
+          "description": "Use a config entry ID when calling without a device target."
+        }
+      }
+    },
+    "stopwatch": {
+      "name": "Stopwatch",
+      "description": "Start, pause or reset the stopwatch.",
+      "fields": {
+        "status": {
+          "name": "Status",
+          "description": "0 stops, 1 starts and 2 resets the stopwatch."
+        },
+        "config_entry_id": {
+          "name": "Config entry id",
+          "description": "Use a config entry ID when calling without a device target."
+        }
+      }
+    },
+    "scoreboard": {
+      "name": "Scoreboard",
+      "description": "Set the blue and red scores.",
+      "fields": {
+        "blue": {
+          "name": "Blue",
+          "description": "Blue."
+        },
+        "red": {
+          "name": "Red",
+          "description": "Red."
+        },
+        "config_entry_id": {
+          "name": "Config entry id",
+          "description": "Use a config entry ID when calling without a device target."
+        }
+      }
+    },
+    "play_buzzer": {
+      "name": "Play buzzer",
+      "description": "Play a short test tone.",
+      "fields": {
+        "config_entry_id": {
+          "name": "Config entry id",
+          "description": "Use a config entry ID when calling without a device target."
+        }
+      }
+    },
+    "select_clock_face": {
+      "name": "Select clock face",
+      "description": "Show a clock face by its Divoom ID.",
+      "fields": {
+        "clock_id": {
+          "name": "Clock id",
+          "description": "Clock id."
+        },
+        "config_entry_id": {
+          "name": "Config entry id",
+          "description": "Use a config entry ID when calling without a device target."
+        }
+      }
+    },
+    "refresh": {
+      "name": "Refresh",
+      "description": "Poll the display immediately.",
+      "fields": {
+        "config_entry_id": {
+          "name": "Config entry id",
+          "description": "Use a config entry ID when calling without a device target."
+        }
+      }
+    },
+    "get_canvas": {
+      "name": "Get canvas",
+      "description": "Return the last pushed preview as a base64 PNG.",
+      "fields": {
+        "config_entry_id": {
+          "name": "Config entry id",
+          "description": "Use a config entry ID when calling without a device target."
+        }
+      }
+    },
+    "get_fonts": {
+      "name": "Get fonts",
+      "description": "Get Divoom’s cloud font catalog.",
+      "fields": {
+        "config_entry_id": {
+          "name": "Config entry id",
+          "description": "Use a config entry ID when calling without a device target."
+        }
+      }
+    },
+    "get_faces": {
+      "name": "Get faces",
+      "description": "Get a page of clock faces from Divoom.",
+      "fields": {
+        "dial_type": {
+          "name": "Dial type",
+          "description": "Dial type."
+        },
+        "page": {
+          "name": "Page",
+          "description": "Page."
+        },
+        "config_entry_id": {
+          "name": "Config entry id",
+          "description": "Use a config entry ID when calling without a device target."
+        }
+      }
+    },
+    "get_config": {
+      "name": "Get config",
+      "description": "Read the display’s shareable configuration fields.",
+      "fields": {
+        "config_entry_id": {
+          "name": "Config entry id",
+          "description": "Use a config entry ID when calling without a device target."
+        }
+      }
+    }
+  },
+  "exceptions": {
+    "device_error": {
+      "message": "The display or remote service could not complete the request."
+    },
+    "invalid_media": {
+      "message": "Use an accessible image source within the size limit."
+    },
+    "invalid_drawing": {
+      "message": "Check the source image, color and pixel coordinates."
+    },
+    "invalid_target": {
+      "message": "Select a loaded Pixoo Doodle device or config entry."
+    },
+    "unsupported": {
+      "message": "This action is unavailable for the display or its firmware."
+    },
+    "no_preview": {
+      "message": "Push a drawing to create a preview."
+    }
+  },
+  "issues": {
+    "endpoint_changed": {
+      "title": "Display endpoint changed",
+      "description": "Pixoo Doodle found the display at its alternate endpoint. Check VLAN rules if communication becomes intermittent."
+    },
+    "old_firmware": {
+      "title": "Update display firmware",
+      "description": "This feature requires firmware 90109 or newer. Check for a device update in the Divoom app."
+    },
+    "cloud_unreachable": {
+      "title": "Divoom catalog unavailable",
+      "description": "Check Internet access from Home Assistant. Local drawing can continue."
+    }
+  }
+}

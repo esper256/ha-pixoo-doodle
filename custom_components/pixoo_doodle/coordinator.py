@@ -3,19 +3,20 @@
 import asyncio
 import logging
 from datetime import datetime, timedelta
-from typing import Any
+
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.core import HomeAssistant
 from homeassistant.exceptions import ConfigEntryAuthFailed, HomeAssistantError
-from homeassistant.helpers.aiohttp_client import async_get_clientsession
 from homeassistant.helpers import issue_registry as ir
+from homeassistant.helpers.aiohttp_client import async_get_clientsession
 from homeassistant.helpers.update_coordinator import DataUpdateCoordinator, UpdateFailed
 
 try:
-    from homeassistant.helpers.update_coordinator import UpdateFailedUnreachable
+    from homeassistant.helpers.update_coordinator import UpdateFailedUnreachable  # type: ignore[attr-defined]
 except ImportError:  # Introduced in Core 2026.12
     UpdateFailedUnreachable = UpdateFailed
 from PIL import Image
+
 from .divoom_client import Client, DeviceError, InvalidToken, Json, Unreachable
 
 DOMAIN = "pixoo_doodle"
@@ -49,6 +50,12 @@ class RuntimeData(DataUpdateCoordinator[Json]):
         self.preview: bytes | None = None
         self.preview_time: datetime | None = None
         self.assumed: Json = {}
+        self.faces: set[int] = set()
+        self.identity: Json = {}
+
+    def firmware_allows(self, minimum: int) -> bool:
+        value = self.data.get("FirmwareVersion")
+        return value is None or (str(value).isdecimal() and int(value) >= minimum)
 
     def issue(self, key: str) -> None:
         ir.async_create_issue(
@@ -64,6 +71,21 @@ class RuntimeData(DataUpdateCoordinator[Json]):
     async def _async_setup(self) -> None:
         try:
             await self.client.probe()
+            if self.client.endpoint != self.client.model.endpoint:
+                self.issue("endpoint_changed")
+            if self.client.model.endpoint.startswith(":"):
+                try:
+                    identity = await self.client.command("Device/GetHardwareVersion")
+                except InvalidToken:
+                    raise
+                except DeviceError:
+                    identity = {}
+                if (
+                    hw := identity.get("Hardware")
+                ) is not None and hw != self.client.hardware:
+                    raise DeviceError("Display hardware changed")
+                if fw := identity.get("FirmwareVersion", identity.get("Software")):
+                    self.identity["FirmwareVersion"] = fw
         except InvalidToken as exc:
             raise ConfigEntryAuthFailed from exc
         except DeviceError as exc:
@@ -78,7 +100,7 @@ class RuntimeData(DataUpdateCoordinator[Json]):
                 state = await self.client.probe()
             if previous != self.client.endpoint:
                 self.issue("endpoint_changed")
-            return self.assumed | state
+            return self.identity | self.assumed | state
         except InvalidToken as exc:
             raise ConfigEntryAuthFailed from exc
         except Unreachable as exc:

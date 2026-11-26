@@ -1,7 +1,9 @@
 from io import BytesIO
+
 import pytest
 from PIL import Image
-from custom_components.pixoo_doodle.divoom_client.render import render, media, png
+
+from custom_components.pixoo_doodle.divoom_client.render import media, png, render
 
 
 @pytest.mark.parametrize("size", [16, 64])

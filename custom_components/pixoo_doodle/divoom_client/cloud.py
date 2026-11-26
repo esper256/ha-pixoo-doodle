@@ -1,6 +1,7 @@
 """Opt-in vendor cloud lookups."""
 
 from aiohttp import ClientSession
+
 from . import DeviceError, Json, request
 
 BASE = "https://app.divoom-gz.com"

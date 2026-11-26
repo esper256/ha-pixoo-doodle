@@ -1,7 +1,7 @@
 """Identification, LAN connection testing and entry options."""
 
 from ipaddress import IPv4Address
-from typing import Any
+
 import probatio as vol
 from homeassistant import config_entries
 from homeassistant.core import callback
@@ -12,6 +12,7 @@ from homeassistant.helpers.selector import (
     TextSelectorType,
 )
 from homeassistant.helpers.service_info.dhcp import DhcpServiceInfo
+
 from .coordinator import DOMAIN
 from .divoom_client import Client, DeviceError, InvalidToken, Json, request
 from .divoom_client.cloud import discover
@@ -121,7 +122,7 @@ class ConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
     async def _identify(self, row):
         try:
             hw = int(row["Hardware"])
-        except (TypeError, ValueError, KeyError):
+        except TypeError, ValueError, KeyError:
             return self.async_abort(reason="unknown_hardware")
         if hw not in MODELS:
             return self.async_abort(reason="unknown_hardware")

@@ -1,4 +1,5 @@
 from homeassistant.components.image import ImageEntity
+
 from .entity import PixooEntity
 
 PARALLEL_UPDATES = 0

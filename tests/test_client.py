@@ -5,6 +5,7 @@ from pathlib import Path
 from unittest.mock import AsyncMock, MagicMock, patch
 
 import pytest
+
 from custom_components.pixoo_doodle.divoom_client import (
     Client,
     DeviceError,
@@ -12,7 +13,7 @@ from custom_components.pixoo_doodle.divoom_client import (
     Unreachable,
     request,
 )
-from custom_components.pixoo_doodle.divoom_client.models import LEGACY, MODERN
+from custom_components.pixoo_doodle.divoom_client.models import MODERN
 
 FIXTURE = json.loads((Path(__file__).parent / "fixtures/pixoo16.json").read_text())
 

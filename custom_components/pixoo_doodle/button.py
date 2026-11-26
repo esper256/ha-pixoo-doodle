@@ -1,5 +1,6 @@
 from homeassistant.components.button import ButtonEntity
 from homeassistant.const import EntityCategory
+
 from .entity import PixooEntity
 
 PARALLEL_UPDATES = 1
@@ -9,12 +10,11 @@ BUZZ = {"ActiveTimeInCycle": 100, "OffTimeInCycle": 100, "PlayTotalTime": 100}
 async def async_setup_entry(hass, entry, async_add_entities):
     runtime = entry.runtime_data
     buttons = []
-    if runtime.client.model.family in ("pixoo64", "frame", "gate"):
+    if runtime.client.model.supports_reboot:
         buttons.append(Action(runtime, "reboot", "Device/SysReboot", {}))
     if (
-        runtime.client.model.canvas
-        and int(runtime.data.get("FirmwareVersion", 90109)) >= 90109
-    ):
+        minimum := runtime.client.model.buzzer_firmware
+    ) is not None and runtime.firmware_allows(minimum):
         buttons.append(Action(runtime, "buzzer", "Device/PlayBuzzer", BUZZ))
     async_add_entities(buttons)
 

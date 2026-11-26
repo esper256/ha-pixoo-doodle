@@ -1,0 +1,335 @@
+draw_text:
+  target:
+    device:
+    - integration: pixoo_doodle
+  fields:
+    text:
+      selector:
+        text: {}
+      required: true
+    font:
+      selector:
+        select:
+          options:
+          - small
+          - large
+    align:
+      selector:
+        select:
+          options:
+          - left
+          - center
+          - right
+    y:
+      selector:
+        number:
+          mode: box
+          min: 0
+          max: 63
+    color:
+      selector:
+        text: {}
+    config_entry_id:
+      selector:
+        text: {}
+scroll_text:
+  target:
+    device:
+    - integration: pixoo_doodle
+  fields:
+    text:
+      selector:
+        text: {}
+      required: true
+    font:
+      selector:
+        select:
+          options:
+          - small
+          - large
+    align:
+      selector:
+        select:
+          options:
+          - left
+          - center
+          - right
+    y:
+      selector:
+        number:
+          mode: box
+          min: 0
+          max: 63
+    color:
+      selector:
+        text: {}
+    speed:
+      selector:
+        number:
+          mode: box
+          min: 0
+          max: 1000
+    config_entry_id:
+      selector:
+        text: {}
+show_image:
+  target:
+    device:
+    - integration: pixoo_doodle
+  fields:
+    source:
+      selector:
+        text: {}
+      required: true
+    fit:
+      selector:
+        select:
+          options:
+          - fit
+          - crop
+    dither:
+      selector:
+        boolean: {}
+    config_entry_id:
+      selector:
+        text: {}
+play_gif:
+  target:
+    device:
+    - integration: pixoo_doodle
+  fields:
+    source:
+      selector:
+        text: {}
+      required: true
+    fit:
+      selector:
+        select:
+          options:
+          - fit
+          - crop
+    dither:
+      selector:
+        boolean: {}
+    config_entry_id:
+      selector:
+        text: {}
+draw_pixels:
+  target:
+    device:
+    - integration: pixoo_doodle
+  fields:
+    points:
+      selector:
+        object: {}
+      required: true
+    color:
+      selector:
+        text: {}
+    commit:
+      selector:
+        boolean: {}
+    config_entry_id:
+      selector:
+        text: {}
+draw_line:
+  target:
+    device:
+    - integration: pixoo_doodle
+  fields:
+    points:
+      selector:
+        object: {}
+      required: true
+    color:
+      selector:
+        text: {}
+    commit:
+      selector:
+        boolean: {}
+    config_entry_id:
+      selector:
+        text: {}
+draw_rect:
+  target:
+    device:
+    - integration: pixoo_doodle
+  fields:
+    points:
+      selector:
+        object: {}
+      required: true
+    color:
+      selector:
+        text: {}
+    commit:
+      selector:
+        boolean: {}
+    filled:
+      selector:
+        boolean: {}
+    config_entry_id:
+      selector:
+        text: {}
+fill:
+  target:
+    device:
+    - integration: pixoo_doodle
+  fields:
+    color:
+      selector:
+        text: {}
+    commit:
+      selector:
+        boolean: {}
+    config_entry_id:
+      selector:
+        text: {}
+clear:
+  target:
+    device:
+    - integration: pixoo_doodle
+  fields:
+    commit:
+      selector:
+        boolean: {}
+    config_entry_id:
+      selector:
+        text: {}
+set_timer:
+  target:
+    device:
+    - integration: pixoo_doodle
+  fields:
+    minute:
+      selector:
+        number:
+          mode: box
+          min: 0
+          max: 59
+      required: true
+    second:
+      selector:
+        number:
+          mode: box
+          min: 0
+          max: 59
+    status:
+      selector:
+        number:
+          mode: box
+          min: 0
+          max: 2
+    config_entry_id:
+      selector:
+        text: {}
+stopwatch:
+  target:
+    device:
+    - integration: pixoo_doodle
+  fields:
+    status:
+      selector:
+        number:
+          mode: box
+          min: 0
+          max: 2
+      required: true
+    config_entry_id:
+      selector:
+        text: {}
+scoreboard:
+  target:
+    device:
+    - integration: pixoo_doodle
+  fields:
+    blue:
+      selector:
+        number:
+          mode: box
+          min: 0
+          max: 999
+      required: true
+    red:
+      selector:
+        number:
+          mode: box
+          min: 0
+          max: 999
+      required: true
+    config_entry_id:
+      selector:
+        text: {}
+play_buzzer:
+  target:
+    device:
+    - integration: pixoo_doodle
+  fields:
+    config_entry_id:
+      selector:
+        text: {}
+select_clock_face:
+  target:
+    device:
+    - integration: pixoo_doodle
+  fields:
+    clock_id:
+      selector:
+        number:
+          mode: box
+          min: 0
+          max: 2147483647
+      required: true
+    config_entry_id:
+      selector:
+        text: {}
+refresh:
+  target:
+    device:
+    - integration: pixoo_doodle
+  fields:
+    config_entry_id:
+      selector:
+        text: {}
+get_canvas:
+  target:
+    device:
+    - integration: pixoo_doodle
+  fields:
+    config_entry_id:
+      selector:
+        text: {}
+get_fonts:
+  target:
+    device:
+    - integration: pixoo_doodle
+  fields:
+    config_entry_id:
+      selector:
+        text: {}
+get_faces:
+  target:
+    device:
+    - integration: pixoo_doodle
+  fields:
+    dial_type:
+      selector:
+        text: {}
+      required: true
+    page:
+      selector:
+        number:
+          mode: box
+          min: 0
+          max: 10000
+    config_entry_id:
+      selector:
+        text: {}
+get_config:
+  target:
+    device:
+    - integration: pixoo_doodle
+  fields:
+    config_entry_id:
+      selector:
+        text: {}

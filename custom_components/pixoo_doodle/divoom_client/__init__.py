@@ -7,7 +7,7 @@ from typing import Any
 
 from aiohttp import ClientError, ClientSession, ClientTimeout
 
-from .models import LEGACY, MODERN, MODELS
+from .models import LEGACY, MODELS, MODERN
 
 type Json = dict[str, Any]
 
@@ -85,14 +85,12 @@ class Client:
         )
 
     async def state(self) -> Json:
-        match self.model.family:
-            case "frame":
-                return await self.command("Device/GetHardwareVersion")
-            case "astro":
-                return {
-                    **await self.command("Sys/GetBrightness"),
-                    **await self.command("Channel/GetOnOffScreen"),
-                }
+        if self.hardware in (402, 510, 511, 512, 530):
+            state = await self.command("Sys/GetBrightness")
+            state.update(await self.command("Channel/GetOnOffScreen"))
+            if "Brightness" not in state or "OnOff" not in state:
+                raise DeviceError("Missing display status")
+            return state
         config = await self.command("Channel/GetAllConf")
         if self.model.canvas:
             config.update(await self.command("Channel/GetIndex"))

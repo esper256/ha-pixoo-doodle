@@ -1,0 +1,69 @@
+{
+  "entity": {
+    "light": {
+      "display": {
+        "default": "mdi:led-outline"
+      }
+    },
+    "image": {
+      "preview": {
+        "default": "mdi:image"
+      }
+    },
+    "number": {
+      "brightness": {
+        "default": "mdi:brightness-6"
+      }
+    },
+    "switch": {
+      "hour24": {
+        "default": "mdi:clock-outline"
+      },
+      "mirror": {
+        "default": "mdi:flip-horizontal"
+      }
+    },
+    "select": {
+      "channel": {
+        "default": "mdi:television-guide"
+      },
+      "custom_page": {
+        "default": "mdi:book-open-page-variant"
+      },
+      "rotation": {
+        "default": "mdi:rotate-right"
+      },
+      "clock_face": {
+        "default": "mdi:clock-outline"
+      },
+      "visualizer": {
+        "default": "mdi:equalizer"
+      }
+    },
+    "button": {
+      "buzzer": {
+        "default": "mdi:volume-high"
+      },
+      "reboot": {
+        "default": "mdi:restart"
+      }
+    },
+    "sensor": {
+      "current_channel": {
+        "default": "mdi:television-guide"
+      },
+      "hardware": {
+        "default": "mdi:chip"
+      },
+      "endpoint": {
+        "default": "mdi:lan-connect"
+      },
+      "resolution": {
+        "default": "mdi:aspect-ratio"
+      },
+      "firmware": {
+        "default": "mdi:information-outline"
+      }
+    }
+  }
+}

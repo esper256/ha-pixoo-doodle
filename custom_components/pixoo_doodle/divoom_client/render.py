@@ -1,6 +1,8 @@
 """Bounded, in-memory RGB rendering; coordinates refer to physical pixels."""
 
 from io import BytesIO
+from pathlib import Path
+
 from PIL import Image, ImageDraw, ImageFont, ImageOps
 
 MAX_BYTES = 8 * 1024 * 1024
@@ -61,7 +63,10 @@ def render(canvas: Image.Image, action: str, args: dict) -> Frames:
                 points, outline=color, fill=color if args.get("filled") else None
             )
     else:
-        font = ImageFont.load_default(size=FONTS[args["font"]])
+        font = ImageFont.truetype(
+            str(Path(__file__).with_name("fonts") / "Silkscreen-Regular.ttf"),
+            size=8 if args["font"] == "small" else 16,
+        )
         text = args["text"]
         width = round(draw.textlength(text, font=font))
         align = args.get("align", "left")
