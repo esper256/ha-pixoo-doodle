@@ -1,5 +1,7 @@
 # Pixoo Doodle
 
+<img src="custom_components/pixoo_doodle/brand/icon.png" width="96" height="96" alt="A calico kitten on a Pixoo display">
+
 Control a Divoom Wi-Fi display from Home Assistant. Draw on a Pixoo 16 or 64, show an image, scroll a message, or use a display as a light and clock in an automation. Normal polling and drawing use the local network.
 
 | Display | Support in v0.2 |
