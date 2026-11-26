@@ -8,7 +8,7 @@ from unittest.mock import AsyncMock, patch
 import pytest
 from homeassistant import config_entries
 from homeassistant.components import media_source
-from homeassistant.components.media_player import SearchMediaQuery
+from homeassistant.components.media_player import BrowseError, MediaPlayerEntityFeature
 from homeassistant.exceptions import HomeAssistantError
 from homeassistant.helpers import entity_registry as er
 from PIL import Image
@@ -88,26 +88,18 @@ async def panel(core, tmp_path):
                 await core.config_entries.async_unload(entry.entry_id)
 
 
-async def test_browser_and_playlist(core, panel, tmp_path):
+async def test_playlist_without_media_browser(core, panel, tmp_path):
     entry, player, wire, http = panel
     prefix = PREFIX + entry.entry_id + "/"
     assert not http.await_count
     assert not any(c.args[0].startswith("Draw/") for c in wire.await_args_list)
-    root = await media_source.async_browse_media(core, PREFIX.rstrip("/"))
-    assert root.children[0].media_content_id == prefix.rstrip("/")
-
-    async def browse(path):
-        return await media_source.async_browse_media(core, prefix + path)
-
-    assert (await browse("artists")).children[0].title == "Ada (11)"
-    assert (await browse("gallery")).children[0].title.startswith("Small")
-    assert (await browse("artist/11")).children[0].can_play
-    search = await media_source.async_search_media(
-        core, prefix + "artists", SearchMediaQuery(search_query="ben")
+    with pytest.raises(BrowseError):
+        await media_source.async_browse_media(core, PREFIX.rstrip("/"))
+    features = core.states.get(player).attributes["supported_features"]
+    assert not features & (
+        MediaPlayerEntityFeature.BROWSE_MEDIA | MediaPlayerEntityFeature.SEARCH_MEDIA
     )
-    assert search.result[0].media_content_id == prefix + "artist/22"
-    resolved = await media_source.async_resolve_media(core, prefix + "art/2", player)
-    assert resolved.mime_type == "image/gif" and resolved.url.endswith("2.gif")
+    http.assert_not_awaited()
 
     async def act(service, **fields):
         return await core.services.async_call(
@@ -143,17 +135,7 @@ async def test_browser_and_playlist(core, panel, tmp_path):
     restored = Playlists(core, entry.entry_id)
     await restored.load()
     assert restored.saved == saved.saved
-    mixes = await browse("playlists")
-    assert mixes.children[0].title == "Family mix"
-    assert len((await browse("playlist/Family%20mix")).children) == 5
-    assert (await media_source.async_browse_media(core, prefix.rstrip("/"))).children[
-        -1
-    ].domain == "media_source"
-    await play(
-        "play_media",
-        media_content_id=mixes.children[0].media_content_id,
-        media_content_type="playlist",
-    )
+    await play("select_source", source="Family mix")
 
     def state():
         return core.states.get(player)

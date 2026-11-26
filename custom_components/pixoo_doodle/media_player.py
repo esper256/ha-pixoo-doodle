@@ -9,14 +9,10 @@ from typing import Any
 from urllib.parse import quote, unquote
 
 from aiohttp import ClientError
-from homeassistant.components import media_source
 from homeassistant.components.media_player import (
-    BrowseMedia,
     MediaPlayerEntity,
     MediaPlayerState,
     MediaType,
-    SearchMedia,
-    SearchMediaQuery,
 )
 from homeassistant.components.media_player import (
     MediaPlayerEntityFeature as Feature,
@@ -51,8 +47,6 @@ class ArtPlayer(PixooEntity, MediaPlayerEntity):
     _attr_state = MediaPlayerState.IDLE
     _attr_supported_features = (
         Feature.PLAY_MEDIA
-        | Feature.BROWSE_MEDIA
-        | Feature.SEARCH_MEDIA
         | Feature.PLAY
         | Feature.PAUSE
         | Feature.STOP
@@ -258,17 +252,3 @@ class ArtPlayer(PixooEntity, MediaPlayerEntity):
             if current:
                 self._index = self._queue.index(current)
         self.async_write_ha_state()
-
-    async def async_browse_media(
-        self,
-        media_content_type: MediaType | str | None = None,
-        media_content_id: str | None = None,
-    ) -> BrowseMedia:
-        return await media_source.async_browse_media(
-            self.hass, media_content_id or self._prefix.rstrip("/")
-        )
-
-    async def async_search_media(self, query: SearchMediaQuery) -> SearchMedia:
-        return await media_source.async_search_media(
-            self.hass, query.media_content_id or self._prefix.rstrip("/"), query
-        )
