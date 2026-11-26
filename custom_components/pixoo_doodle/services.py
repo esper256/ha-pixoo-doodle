@@ -1,6 +1,7 @@
 """Device-targeted actions and persistent per-entry drawing."""
 
 from base64 import b64encode
+from collections.abc import Iterable
 from datetime import UTC, datetime
 from pathlib import Path
 from typing import Any
@@ -18,12 +19,12 @@ from PIL import Image
 
 from .button import BUZZ
 from .coordinator import DOMAIN, RuntimeData
-from .divoom_client import DeviceError
+from .divoom_client import DeviceError, Json
 from .divoom_client.cloud import catalog
 from .divoom_client.render import FONTS, MAX_BYTES, media, png, render
 
 
-def integer(low, high):
+def integer(low: int, high: int) -> vol.All[int]:
     return vol.All(vol.Coerce(int), vol.Range(min=low, max=high))
 
 
@@ -95,12 +96,12 @@ DRAW = {
 }
 
 
-def invalid(key):
+def invalid(key: str) -> ServiceValidationError:
     return ServiceValidationError(translation_domain=DOMAIN, translation_key=key)
 
 
-async def load_media(hass, source):
-    def read(path, roots=None):
+async def load_media(hass: HomeAssistant, source: str) -> bytes:
+    def read(path: str | Path, roots: Iterable[str] | None = None) -> bytes:
         path = Path(path).resolve(strict=True)
         allowed = (
             any(path.is_relative_to(Path(root).resolve()) for root in roots)
@@ -128,12 +129,12 @@ async def load_media(hass, source):
         ) as response:
             if response.status != 200:
                 raise invalid("invalid_media")
-            data = bytearray()
+            buffer = bytearray()
             async for part in response.content.iter_chunked(65536):
-                data.extend(part)
-                if len(data) > MAX_BYTES:
+                buffer.extend(part)
+                if len(buffer) > MAX_BYTES:
                     raise invalid("invalid_media")
-            return bytes(data)
+            return bytes(buffer)
     if not Path(source).is_absolute():
         raise invalid("invalid_media")
     data = await hass.async_add_executor_job(read, source)
@@ -142,7 +143,7 @@ async def load_media(hass, source):
     return data
 
 
-async def draw(runtime, action, args):
+async def draw(runtime: RuntimeData, action: str, args: Json) -> None:
     if runtime.canvas is None:
         raise invalid("unsupported")
     async with runtime.canvas_lock:
@@ -194,7 +195,7 @@ async def draw(runtime, action, args):
         runtime.canvas = image
 
 
-async def dispatch(r: RuntimeData, action: str, args: dict[str, Any]):
+async def dispatch(r: RuntimeData, action: str, args: dict[str, Any]) -> Json:
     family = r.client.model.family
     if action in DRAW:
         await draw(r, action, args)
@@ -270,7 +271,7 @@ async def dispatch(r: RuntimeData, action: str, args: dict[str, Any]):
 
 @callback
 def async_setup_services(hass: HomeAssistant) -> None:
-    async def handle(call: ServiceCall):
+    async def handle(call: ServiceCall) -> Json | None:
         args = dict(call.data)
         entry_id = args.pop("config_entry_id", None)
         device_ids = args.pop("device_id", [])
@@ -281,9 +282,9 @@ def async_setup_services(hass: HomeAssistant) -> None:
         ids = {entry_id} if entry_id else set()
         for device_id in device_ids:
             device = dr.async_get(hass).async_get(device_id)
-            if not device:
+            if not device or not device.config_entry_id:
                 raise invalid("invalid_target")
-            ids.update(device.config_entries)
+            ids.add(device.config_entry_id)
         result = {}
         entries = [hass.config_entries.async_get_entry(i) for i in ids]
         if not entries or any(

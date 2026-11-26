@@ -89,8 +89,8 @@ async def test_actions_by_device(core, tmp_path):
         ),
     ):
         await core.config_entries.async_add(entry)
-        device = dr.async_get(core).async_get_device(
-            identifiers={(DOMAIN, "test-device")}
+        device = dr.async_get(core).async_get_device_by_identifier(
+            (DOMAIN, "test-device"), entry.entry_id
         )
         path = tmp_path / "sample.png"
         Image.new("RGB", (9, 3), "red").save(path)

@@ -1,8 +1,10 @@
 """Share device configuration without identifying network or account details."""
 
 from homeassistant.components.diagnostics import async_redact_data
+from homeassistant.core import HomeAssistant
 
 from .coordinator import PixooConfigEntry
+from .divoom_client import Json
 
 SAFE = {
     "Brightness",
@@ -27,7 +29,7 @@ SAFE = {
 }
 
 
-def safe_state(data):
+def safe_state(data: Json) -> Json:
     return {
         key: value
         for key, value in data.items()
@@ -35,7 +37,9 @@ def safe_state(data):
     }
 
 
-async def async_get_config_entry_diagnostics(hass, entry: PixooConfigEntry):
+async def async_get_config_entry_diagnostics(
+    hass: HomeAssistant, entry: PixooConfigEntry
+) -> Json:
     runtime = entry.runtime_data
     return {
         "settings": async_redact_data(

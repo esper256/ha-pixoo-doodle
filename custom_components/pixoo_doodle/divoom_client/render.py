@@ -2,6 +2,7 @@
 
 from io import BytesIO
 from pathlib import Path
+from typing import Any
 
 from PIL import Image, ImageDraw, ImageFont, ImageOps
 
@@ -44,7 +45,7 @@ def media(
     return frames
 
 
-def render(canvas: Image.Image, action: str, args: dict) -> Frames:
+def render(canvas: Image.Image, action: str, args: dict[str, Any]) -> Frames:
     image = canvas.copy()
     draw = ImageDraw.Draw(image)
     color = args.get("color", "#ffffff")

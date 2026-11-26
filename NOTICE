@@ -1,0 +1,11 @@
+Pixoo Doodle is an independent integration for Divoom displays.
+
+Protocol and device behavior references:
+Divoom ShowDoc and DivoomDevelop/divoom-wifi-python
+gickowtf/pixoo-homeassistant (endpoint fallback and drawing counter observations)
+cyanheads/pixoo-toolkit (frame pacing, dimensions and firmware limits)
+SimplyRoba/pixoo-bridge.rs (command inventory)
+
+The client and integration are original implementations. Silkscreen Regular is
+by Jason Kottke and the Silkscreen project authors and distributed under the
+SIL Open Font License 1.1. See divoom_client/fonts/OFL.txt in the integration.

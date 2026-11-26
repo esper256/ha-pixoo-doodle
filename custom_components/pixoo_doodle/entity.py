@@ -11,7 +11,7 @@ CHANNELS = ["faces", "cloud", "visualizer", "custom", "black_screen"]
 class PixooEntity(CoordinatorEntity[RuntimeData]):
     _attr_has_entity_name = True
 
-    def __init__(self, runtime: RuntimeData, key: str):
+    def __init__(self, runtime: RuntimeData, key: str) -> None:
         super().__init__(runtime)
         entry = runtime.entry
         self._attr_translation_key = key

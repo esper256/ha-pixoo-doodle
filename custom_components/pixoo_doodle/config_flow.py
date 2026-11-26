@@ -30,20 +30,24 @@ def identity(row: Json) -> str:
 class ConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
     VERSION = 1
 
-    def __init__(self):
+    def __init__(self) -> None:
         self.rows: dict[str, Json] = {}
         self.pending: Json = {}
         self.target: config_entries.ConfigEntry | None = None
 
     @staticmethod
     @callback
-    def async_get_options_flow(config_entry):
+    def async_get_options_flow(config_entry: config_entries.ConfigEntry) -> OptionsFlow:
         return OptionsFlow()
 
-    async def async_step_user(self, user_input=None):
+    async def async_step_user(
+        self, user_input: Json | None = None
+    ) -> config_entries.ConfigFlowResult:
         return self.async_show_menu(step_id="user", menu_options=["manual", "cloud"])
 
-    async def async_step_cloud(self, user_input=None):
+    async def async_step_cloud(
+        self, user_input: Json | None = None
+    ) -> config_entries.ConfigFlowResult:
         if user_input is not None:
             return await self._identify(self.rows[user_input["device"]])
         try:
@@ -66,14 +70,20 @@ class ConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
             data_schema=vol.Schema({vol.Required("device"): vol.In(options)}),
         )
 
-    async def async_step_manual(self, user_input=None):
+    async def async_step_manual(
+        self, user_input: Json | None = None
+    ) -> config_entries.ConfigFlowResult:
         return await self._host_form("manual", user_input)
 
-    async def async_step_reconfigure(self, user_input=None):
+    async def async_step_reconfigure(
+        self, user_input: Json | None = None
+    ) -> config_entries.ConfigFlowResult:
         self.target = self._get_reconfigure_entry()
         return await self._host_form("reconfigure", user_input)
 
-    async def _host_form(self, step, user_input):
+    async def _host_form(
+        self, step: str, user_input: Json | None
+    ) -> config_entries.ConfigFlowResult:
         error = None
         if user_input is not None:
             try:
@@ -119,7 +129,7 @@ class ConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
             errors={"base": error} if error else {},
         )
 
-    async def _identify(self, row):
+    async def _identify(self, row: Json) -> config_entries.ConfigFlowResult:
         try:
             hw = int(row["Hardware"])
         except TypeError, ValueError, KeyError:
@@ -143,7 +153,7 @@ class ConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
             return await self.async_step_token()
         return await self._finish()
 
-    async def _finish(self):
+    async def _finish(self) -> config_entries.ConfigFlowResult:
         client = Client(
             async_get_clientsession(self.hass),
             self.pending["host"],
@@ -160,32 +170,40 @@ class ConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
             return self.async_update_reload_and_abort(self.target, data=self.pending)
         return self.async_create_entry(title=client.model.name, data=self.pending)
 
-    def _token_form(self, error=None):
+    def _token_form(self, error: str | None = None) -> config_entries.ConfigFlowResult:
         return self.async_show_form(
             step_id="token",
             data_schema=vol.Schema({vol.Required("token"): PASSWORD}),
             errors={"base": error} if error else {},
         )
 
-    async def async_step_token(self, user_input=None):
+    async def async_step_token(
+        self, user_input: Json | None = None
+    ) -> config_entries.ConfigFlowResult:
         if user_input is None:
             return self._token_form()
         self.pending["token"] = user_input["token"]
         return await self._finish()
 
-    async def async_step_reauth(self, entry_data):
+    async def async_step_reauth(
+        self, entry_data: Json
+    ) -> config_entries.ConfigFlowResult:
         self.target = self._get_reauth_entry()
         self.pending = dict(self.target.data)
         return await self.async_step_token()
 
-    async def async_step_dhcp(self, discovery_info: DhcpServiceInfo):
+    async def async_step_dhcp(
+        self, discovery_info: DhcpServiceInfo
+    ) -> config_entries.ConfigFlowResult:
         await self.async_set_unique_id(discovery_info.macaddress)
         self._abort_if_unique_id_configured(updates={"host": discovery_info.ip})
         return self.async_abort(reason="unknown_hardware")
 
 
 class OptionsFlow(config_entries.OptionsFlowWithReload):
-    async def async_step_init(self, user_input=None):
+    async def async_step_init(
+        self, user_input: Json | None = None
+    ) -> config_entries.ConfigFlowResult:
         if user_input is not None:
             return self.async_create_entry(data=user_input)
         opts = self.config_entry.options
